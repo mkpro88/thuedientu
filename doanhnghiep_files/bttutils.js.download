@@ -1,0 +1,66 @@
+﻿function bttOpenDialog(id, width, height, title, url, submitFunc){
+	//goi ajax truy van thong tin
+	width = (width !=null ? width : 200);
+	height = (height !=null ? height : 200);
+	$('#'+id).dialog({
+		show: "blind",
+		modal : true,
+		position: ['center', 100],
+		hide: "explode",
+		beforeClose: function(){},
+		open : function() {
+			$(this).load(url);
+		},
+		height : height,
+		width : width,
+		title : title,
+		buttons : {
+			'Tiếp tục' : function() {
+
+				submitFormWithAjax($(this).find('form'),submitFunc);
+				closeDialog($(this));
+			},
+			'Hủy' : function() {
+
+				$(this).dialog('close');
+			}
+		},
+		close : function() {
+
+			$(this).html("");
+		}
+	});
+}
+
+function closeDialog(obj) {
+
+	obj.dialog('close');
+}
+
+function submitFormWithAjax(form, submitFunc) {
+
+	form = $(form);
+	$.ajax({
+		url : form.attr('action'),
+		data : form.serialize(),
+		type : (form.attr('method'))
+	});
+
+	//update data to main page
+	/* $(form).find(":input").each(function() {
+		var type = $(this).attr("type");
+		var name = $(this).attr("name");
+		var value = $(this).attr("value");
+		if(type=="radio" || type=="checkbox"){
+			if(name=="term" || name=="term_code"){
+				value = $(this).find(":input:checked").val();
+				alert(value);
+				$(name).val(value);
+			}
+		}
+	}); */
+
+	submitFunc(form);
+
+	return false;
+}

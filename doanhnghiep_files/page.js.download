@@ -1,0 +1,231 @@
+// Promises
+var _eid_promises = {};
+// Turn the incoming message from extension
+// into pending Promise resolving
+window.addEventListener("message", function(event) {
+    if(event.source !== window) return;
+    if(event.data.src && (event.data.src === "background.js")) {
+        console.log("Page received: ");
+        console.log(event.data);
+        // Get the promise
+        if(event.data.CODE) {
+        	//neu code = check, check version
+        	if(event.data.CODE=='CHECK'){
+        		var p = _eid_promises_chk[event.data.CODE];
+        		// resolve
+                if(p&&event.data.CODE) {
+    				p.resolve(event.data);
+                } else {
+                    // reject
+                    p.reject(new Error(event.data.CODE));
+                }
+                delete _eid_promises_chk[event.data.CODE];
+        	}else{
+        		var p = _eid_promises[event.data.CODE];
+        		// resolve
+                if(p&&event.data.CODE) {
+    				p.resolve(event.data);
+                } else {
+                    // reject
+                    p.reject(new Error(event.data.CODE));
+                }
+                delete _eid_promises[event.data.CODE];
+        	}
+
+        } else {
+            console.log("No nonce in event msg");
+        }
+    }
+}, false);
+
+
+function TokenSigning() {
+    function nonce() {
+        var val = "";
+        var hex = "abcdefghijklmnopqrstuvwxyz0123456789";
+        for(var i = 0; i < 16; i++) val += hex.charAt(Math.floor(Math.random() * hex.length));
+        return val;
+    }
+
+    function messagePromise(msg) {
+        return new Promise(function(resolve, reject) {
+            // amend with necessary metadata
+            msg['nonce'] = msg.CODE;
+            msg['src'] = 'page.js';
+            // send message
+            window.postMessage(msg, "*");
+            // and store promise callbacks
+            _eid_promises[msg.CODE] = {
+                resolve: resolve,
+                reject: reject
+            };
+        });
+    }
+    this.getCertificate = function() {
+        var msg = {CODE: 'CER_002'};
+        console.log("getCertificate()");
+        return messagePromise(msg);
+    };
+    this.getCertificateNTDT = function() {
+        var msg = {CODE: 'NTDT_CER_001'};
+        console.log("getCertificateNTDT()");
+        return messagePromise(msg);
+    };
+    this.sign = function(base64Value,serialNumber,checkCertSerialNumber, checkTin, tinValid, dateSigning, timezoneSigning) {
+        //var msg = {type: 'SIGN', cert: cert.hex, hash: hash.hex, hashtype: hash.type, lang: options.lang};
+		var msg = {CODE: 'CER_001', BASE64_VALUE: base64Value, SERIAL_NUMBER: serialNumber, CHECK_CERT_SERIAL: checkCertSerialNumber, CHECK_TIN:checkTin, TIN_VALID:tinValid, DATE_SIGNING:dateSigning, TIMEZONE_SIGNING:timezoneSigning};
+        console.log("sign()");
+        return messagePromise(msg);
+    };
+    this.signNTDT = function(subCode,base64Value,serialNumber, gdtSignPath, bankSignPath,checkTin, tinValid, dateSigning, timezoneSigning) {
+    	if(subCode=="00"){
+    		var msg = {CODE: 'NTDT_CER_001', BASE64_VALUE: base64Value, SERIAL_NUMBER: serialNumber, GDT_SIGN_PATH: gdtSignPath, BANK_SIGN_PATH: bankSignPath, CHECK_CERT_SERIAL: serialNumber, CHECK_TIN: checkTin, TIN_VALID: tinValid, DATE_SIGNING: dateSigning, TIMEZONE_SIGNING: timezoneSigning};
+            console.log("signNTDT()_00");
+            return messagePromise(msg);
+    	}else{
+    		//var msg = {type: 'SIGN', cert: cert.hex, hash: hash.hex, hashtype: hash.type, lang: options.lang};
+    		var msg = {CODE: 'NTDT_CER_002', BASE64_VALUE: base64Value, SERIAL_NUMBER: serialNumber, NTDT_SIGN_CODE:subCode, GDT_SIGN_PATH:gdtSignPath, BANK_SIGN_PATH: bankSignPath, CHECK_CERT_SERIAL: serialNumber, CHECK_TIN:checkTin, TIN_VALID:tinValid, DATE_SIGNING:dateSigning, TIMEZONE_SIGNING:timezoneSigning};
+            console.log("signNTDT()");
+            return messagePromise(msg);
+    	}
+    };
+    this.jfuChooseFile = function(){
+    	var msg = {CODE: 'JFU_001'};
+        console.log("jfuChooseFile()");
+        return messagePromise(msg);
+    };
+    this.jfuUpload = function(_action, _urlFileName, _uploadFileName, _chunksize, _cookieName, _cookieValue){
+    	var msg = {CODE: 'JFU_003', REQUEST_URL_ACTION: _action, URL_FILE_NAME: _urlFileName, UPLOADED_FILE_NAME: _uploadFileName, CHUNKSIZE: _chunksize, COOKIE_NAME: _cookieName, COOKIE_VALUE: _cookieValue};
+        console.log("jfuUpload()");
+        return messagePromise(msg);
+    };
+    this.jfuSign = function(url, xpath_data, xpath_sign,serialNumber,checkCertSerialNumber, checkTin, tinValid, dateSigning, timezoneSigning){
+    	var msg = {CODE: 'JFU_002', URL_FILE_NAME: url, XPATH_DATA: xpath_data, XPATH_SIGN: xpath_sign, SERIAL_NUMBER: serialNumber, CHECK_CERT_SERIAL: checkCertSerialNumber, CHECK_TIN:checkTin, TIN_VALID:tinValid, DATE_SIGNING:dateSigning, TIMEZONE_SIGNING:timezoneSigning};
+        console.log("jfuSign()");
+        return messagePromise(msg);
+    };
+    this.jfuChooseFile_PLuc = function(){
+    	var msg = {CODE: 'JFU_PLUC_001'};
+    	console.log("jfuChooseFile_PLuc()");
+    	return messagePromise(msg);
+    };
+    this.jfuUpload_PLuc = function(_action, _urlFileName, _uploadFileName, _chunksize, _cookieName, _cookieValue, _certChain, _signature){
+    	//_certChain, _signature, _activeTin, _validXML, _xpath
+    	var msg = {CODE: 'JFU_PLUC_003', REQUEST_URL_ACTION: _action, URL_FILE_NAME: _urlFileName,
+    			UPLOADED_FILE_NAME: _uploadFileName, CHUNKSIZE: _chunksize, COOKIE_NAME: _cookieName,
+    			COOKIE_VALUE: _cookieValue, CERT_CHAIN: _certChain, SIGNATURE: _signature, ACTIVE_TIN: "", VALID_XML: "TRUE",
+    			XPATH_DATA: "", XPATH_SIGN: ""};
+    	console.log("jfuUpload_PLuc()");
+    	return messagePromise(msg);
+    };
+    this.jfuSign_PLuc = function(
+    		url, xpath_data, xpath_sign,serialNumber,checkCertSerialNumber,
+    		checkTin, tinValid, dateSigning, timezoneSigning,
+    		_uploadedFileName, _maBangKe, _mapVersionHTKK, _versionHTKK, _certChain, _signature, _activeTin, _validXML){
+    	var msg = {CODE: 'JFU_PLUC_002', URL_FILE_NAME: url, XPATH_DATA: xpath_data, XPATH_SIGN: xpath_sign,
+    			SERIAL_NUMBER: serialNumber, CHECK_CERT_SERIAL: checkCertSerialNumber, CHECK_TIN:checkTin,
+    			TIN_VALID:tinValid, DATE_SIGNING:dateSigning, TIMEZONE_SIGNING:timezoneSigning,
+    			UPLOADED_FILE_NAME: _uploadedFileName, MA_BANG_KE: _maBangKe, MAP_VERSION_HTKK: _mapVersionHTKK,
+    			VERSION_HTKK: _versionHTKK, CERT_CHAIN: _certChain, SIGNATURE: _signature, ACTIVE_TIN: _activeTin, VALID_XML: _validXML
+    	};
+    	console.log("jfuSign_PLuc()");
+    	return messagePromise(msg);
+    };
+    this.impPLuc = function(_subCode, _maxRowNumber, _tin){
+    	var msg = {CODE: 'IMP_002', ROW_MAX_NUMBER: _maxRowNumber, SUB_CODE: _subCode, TIN: _tin
+    	};
+    	console.log("impPLuc()");
+    	return messagePromise(msg);
+    };
+    this.downloadBke = function(_url){
+    	var msg = {CODE: 'DWN_BKE_001', BKE_URL: _url
+    	};
+    	console.log("downloadBke()");
+    	return messagePromise(msg);
+    };
+    this.getVersion = function() {
+        console.log("getVersion()");
+        return messagePromise({
+            type: 'VERSION'
+        });
+    };
+
+    //ke khai
+    this.getCertificateOnlline = function(_code, _checkCertSerialNumber, _activeCertSerialNumber,
+            _pkcs11LibraryNameList, _dateSinging, _timezoneSinging, _checkTin, _tinValid) {
+            var msg = {
+                CODE: _code,
+                CHECK_CERT_SERIAL: _checkCertSerialNumber,
+                ACTIVE_CERT_SERIAL: _activeCertSerialNumber,
+                PKCS_11_LIBRARY_NAME_LIST: _pkcs11LibraryNameList,
+                CHECK_TIN: _dateSinging,
+                TIN_VALID: _timezoneSinging,
+                DATE_SIGNING: _checkTin,
+                TIMEZONE_SIGNING: _tinValid
+            };
+            console.log(" ::: getCertificateOnlline() ::: " + _code);
+            return messagePromise(msg);
+        };
+    this.signOnlline = function(code, pincode, base64Value, serialNumber, checkCertSerialNumber,
+        checkTin, tinValid, dateSigning, timezoneSigning, pkcs11LibraryNameList) {
+        var msg = {
+            CODE: code,
+            PIN_CODE: pincode,
+            BASE64_VALUE: base64Value,
+            SERIAL_NUMBER: serialNumber,
+            CHECK_CERT_SERIAL: checkCertSerialNumber,
+            CHECK_TIN: checkTin,
+            TIN_VALID: tinValid,
+            DATE_SIGNING: dateSigning,
+            TIMEZONE_SIGNING: timezoneSigning,
+            PKCS_11_LIBRARY_NAME_LIST: pkcs11LibraryNameList
+        };
+        console.log(" ::: signOnlline() ::: " + code);
+        return messagePromise(msg);
+    };
+    this.offlineUpload = function(_code, _action, _urlFileName, _uploadFileName, _chunksize, _cookieName, _cookieValue,
+        _certChain,_signature, _activeTin, _xPath_data, _xPath_sign, _validXML) {
+        var msg = {
+            CODE: _code,
+            REQUEST_URL_ACTION: _action,
+            URL_FILE_NAME: _urlFileName,
+            UPLOADED_FILE_NAME: _uploadFileName,
+            CHUNKSIZE: _chunksize,
+            COOKIE_NAME: _cookieName,
+            COOKIE_VALUE: _cookieValue,
+            CERT_CHAIN: _certChain,
+            SIGNATURE:_signature,
+            ACTIVE_TIN: _activeTin,
+            XPATH_DATA: _xPath_data,
+            XPATH_SIGN: _xPath_sign,
+            VALID_XML: _validXML
+        };
+        console.log(" ::: offlineUpload() ::: ", _code);
+        return messagePromise(msg);
+    };
+    this.offlineSign = function(code, loaiHSo, urlFileName, xpath_data, xpath_sign, serialNumber, checkCertSerialNumber, checkTin, tinValid, dateSigning, timezoneSigning, pkcs11LibraryNameList) {
+        var msg = {
+            CODE: code,
+            LOAI_HSO: loaiHSo,
+            URL_FILE_NAME: urlFileName,
+            XPATH_DATA: xpath_data,
+            XPATH_SIGN: xpath_sign,
+            SERIAL_NUMBER: serialNumber,
+            CHECK_CERT_SERIAL: checkCertSerialNumber,
+            CHECK_TIN: checkTin,
+            TIN_VALID: tinValid,
+            DATE_SIGNING: dateSigning,
+            TIMEZONE_SIGNING: timezoneSigning,
+            PKCS_11_LIBRARY_NAME_LIST: pkcs11LibraryNameList
+        };
+        console.log(" ::: offlineSign() ::: ", code);
+        return messagePromise(msg);
+    };
+    this.offlineChooseFile = function(_code) {
+        var msg = {
+            CODE: _code
+        };
+        console.log(" ::: offlineChooseFile() ::: ", _code);
+        return messagePromise(msg);
+    };
+}

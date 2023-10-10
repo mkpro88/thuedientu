@@ -1,0 +1,479 @@
+﻿// Convert to formal date from short date
+$(document).ready(function(){
+	jQuery('.vnDate').change(function(){
+		valtest = jQuery(this).val();
+
+		if(!isValidDate(valtest))
+		{
+			alert(errDateFmt);
+			jQuery(this).val("");
+			jQuery(this).focus();
+		}
+	});
+});
+
+$(document).ready(function(){
+	try{
+
+		$("#OTP").each(function(){
+			$(this).attr( "autocomplete", "off" );
+		});
+		/*$(".accounts").each(function(){
+			$(this).html(format_account($(this).html()));
+		});*/
+		$("button,input[type='button'],input[type='submit'],input[type='reset']").addClass("awesome");
+		if($(".price").length > 0){
+			$(".price").priceFormat({prefix:'',centsLimit:0,centsSeparator:''});
+		}
+		/*if($(".msb-account").length > 0){
+			$(".msb-account").mask("999-999-99-9999999");
+		}*/
+
+		$(".table_format > tbody > tr").each(function(i){
+			if (i%2!=0 && i!=0){
+				$(this).addClass('even');
+				$(this).css('background','#ddd');
+			}
+		});
+
+
+		$(".amounts").each(function(){
+			$(this).html(addCommas($(this).html()));
+		});
+
+		$(".table_headerto > input").css('margin','5px');
+
+		formatSelect();
+		$(".clean-vietnamese").cleanVietnamese();
+
+		$(".onlyClick").click(function(){
+			$(".onlyClick").attr("disabled","disabled");
+		});
+		$(".step1_current").html("<span class='step1Corp'>"+$(".step1_current").html()+"</span>");
+
+	}catch(err){}
+
+
+});
+	function hideErrorForm(){
+		$('#transForm').validationEngine('hideAll');
+	}
+	function showErrorForm(id,error){
+			jQuery('#'+id).validationEngine('showPrompt', error, 'red');
+			setTimeout("hideErrorForm()",8000);
+	}
+	function showErrorFormTime(id,error,time){
+		jQuery('#'+id).validationEngine('showPrompt', error, 'red');
+		setTimeout("hideErrorForm()",time);
+	}
+
+	function addCommas(nStr)
+	{
+	  nStr += '';
+	  x = nStr.split('.');
+	  x1 = x[0];
+	  x2 = x.length > 1 ? '.' + x[1] : '';
+	  var rgx = /(\d+)(\d{3})/;
+	  while (rgx.test(x1)) {
+	    x1 = x1.replace(rgx, '$1' + '.' + '$2');
+	  }
+	  return x1 + x2;
+	}
+
+
+
+
+	function format_account(acc_no){
+		if (acc_no !=null){
+			acc_no = acc_no.replace(/[^0-9]/g, '');
+			/*acc_no = acc_no.substring(0,3) + '-' + acc_no.substring(3,6) + '-' + acc_no.substring(6,8) + '-'
+				+ acc_no.substring(8,15);*/
+			acc_no = acc_no.substring(0,3) + acc_no.substring(3,6) + acc_no.substring(6,8) + acc_no.substring(8,15);
+			return acc_no;
+		}
+	}
+
+
+
+	function formatAccountNo(obj){
+		//alert('aaaaaaaa');
+		obj.find("option").each(function(){
+			var string =$(this).html();
+			if (string != 'ALL' && string.substring(0,1) != 'T'&& string.substring(0,1) != '-'){
+				var acc = format_account(string);
+				$(this).html(acc);
+			}
+		});
+	}
+
+	function formatSelect(){
+		if ($("select > option").length > 1){
+			$("select > option").each(function(){
+				var string =$(this).html();
+				if (string.substring(0,1) == ''){
+					$(this).remove();
+				}
+			});
+		}
+	}
+
+
+	function format_dropdown(obj){
+
+		//obj.css('text-align','center');
+		/*obj.find("option:gt(0)").each(function(){
+			$(this).css('text-align', 'left');
+		});
+		obj.find("option:eq(0)").css('text-align', 'center');
+		*/
+	}
+
+	function formatSelected(obj){
+		/*if(obj.selectedIndex==0){
+			$(obj).css('text-align', 'center');
+		}else{
+			$(obj).css('text-align', 'left');
+		}*/
+
+	}
+
+	/*function formatAccountAmount(obj, currency){
+		var amount
+		var acc_no
+		var currency
+		obj.find("option").each(function(k){
+			//if(k>0){
+				var string =$(this).html();
+				if (string.substring(0,1) != '-' && string.substring(string.length-1) != ')'){
+				if(currency==false){
+					string_split = string.split("--");
+					amount = addCommas(string_split[1]);
+					acc_no = format_account(string_split[0]);
+					$(this).html(acc_no + '  ---  ' + '('+amount+')');
+				}else{
+					string_split = string.split("---");
+					amount = addCommas(string_split[1]);
+					currency = amount.substring(amount.length-3);
+					amount = amount.replace(currency,'') + ' ' + currency;
+					acc_no = format_account(string_split[0]);
+					$(this).html(acc_no + '  ---  ' + '('+amount+')');
+				}
+			}
+
+			//}
+
+
+		});
+
+	}*/
+
+
+	function formatAccountAmount(obj, currency, acctype){
+		var amount;
+		var acc_no;
+		var currency;
+		var actype;
+		obj.find("option").each(function(){
+
+			var string =jQuery(this).html();
+
+			if (string.substring(0,1) != '-' && string.substring(string.length-1) != ')'){
+				if(currency==false){
+					if (string.indexOf("--") !=-1){
+						string_split = string.split("--");
+						amount = addCommas(string_split[1]);
+						acc_no = format_account(string_split[0]);
+						jQuery(this).html(acc_no + '  ---  ' + '('+amount+')');
+					}else {
+						acc_no = format_account(string);
+						jQuery(this).html(acc_no);
+					}
+				}else if(acctype==false){
+					string_split = string.split("---");
+					amount = addCommas(string_split[1]);
+					currency = amount.substring(amount.length-3);
+					amount = amount.replace(currency,'') + ' ' + currency;
+					acc_no = format_account(string_split[0]);
+					jQuery(this).html(acc_no + '  ---  ' + '('+amount+')');
+				}else{
+					string_split = string.split("---");
+					amount = addCommas(string_split[1]);
+					actype = string_split[2];
+					currency = amount.substring(amount.length-3);
+					amount = amount.replace(currency,'') + ' ' + currency;
+					acc_no = format_account(string_split[0]);
+					jQuery(this).html(acc_no + '  ---  ' + '('+amount+')' + '  ---  ' + actype);
+				}
+			}
+
+		});
+
+	};
+
+	function formatAccountAmountType2(obj, currency, acctype){
+		var amount;
+		var acc_no;
+		var currency;
+		var actype;
+		obj.find("option").each(function(){
+
+			var string =jQuery(this).html();
+
+			if (string.substring(0,1) != '-' && string.substring(string.length-1) != ')'){
+				if(currency==false){
+					if (string.indexOf("--") !=-1){
+						string_split = string.split("--");
+						amount = addCommas(string_split[1]);
+						acc_no = format_account(string_split[0]);
+						jQuery(this).html(acc_no + '  ---  ' + '('+amount+')');
+					}else {
+						acc_no = format_account(string);
+						jQuery(this).html(acc_no);
+					}
+				}else if(acctype==false){
+					string_split = string.split("---");
+					amount = addCommas(string_split[1]);
+					currency = amount.substring(amount.length-3);
+					amount = amount.replace(currency,'') + ' ' + currency;
+					acc_no = format_account(string_split[0]);
+					jQuery(this).html(acc_no + '  ---  ' + '('+amount+')');
+				}else{
+					string_split = string.split("---");
+					amount = addCommas(string_split[1]);
+					actype = string_split[2];
+					currency = amount.substring(amount.length-3);
+					amount = amount.replace(currency,'') + ' ' + currency;
+					acc_no = format_account(string_split[0]);
+					jQuery(this).html(acc_no);
+					//jQuery(this).html(acc_no + '  ---  ' + actype);
+				}
+			}
+
+		});
+
+	};
+
+	function cleanAmount(){
+		$(".price").each(function(){
+			$(this).val($(this).val().replace(/[^0-9.]/g, ''));
+
+		});
+		$(".price1").each(function(){
+			$(this).val($(this).val().replace(/[^0-9.]/g, ''));
+
+		});
+	}
+
+	function cleanAccount(){
+		$(".msb-account").each(function(){
+			$(this).val($(this).val().replace(/[^a-zA-Z0-9]/g, ''));
+
+		});
+	}
+	jQuery.fn.cleanVietnamese = function() {
+    $(this).each(function(){
+        $(this).bind('blur',function(){
+            $(this).val(clean_vietnamese($(this).val()));
+        });
+		$(this).keypress(function(event){
+			if(event.which==13){
+				$(this).val(clean_vietnamese($(this).val()));
+			}
+		});
+
+
+
+    });
+	};
+
+
+
+function clean_vietnamese(vietnamese){
+
+	var mang = new Array();
+    var eng = new Array("A","D","E","I","O","U","Y","a","d","e","i","o","u","y"," ");
+
+    mang[0]=new Array("À","Á","Ả","Ã","Ạ","Â","Ấ","Ầ","Ẩ","Ẫ","Ậ","Ắ","Ằ","Ă","Ặ");
+    mang[1]=new Array("Đ");
+    mang[2]=new Array("È","É","Ẻ","Ẽ","Ẹ","Ê","Ề","Ế","Ể","Ễ","Ệ");
+    mang[3]=new Array("Ì","Í","Ỉ","Ĩ","Ị");
+    mang[4]=new Array("Ò","Ó","Ỏ","Õ","Ọ","Ô","Ồ","Ố","Ổ","Ỗ","Ộ","Ơ","Ờ","Ớ","Ở","Ỡ","Ợ");
+    mang[5]=new Array("Ù","Ú","Ủ","Ũ","Ụ","Ư","Ừ","Ứ","Ử","Ữ","Ự");
+    mang[6]=new Array("Ỳ","Ý","Ỷ","Ỹ","Ỵ");
+
+    mang[7]=new Array("à","á","ả","ã","ạ","â","ấ","ầ","ẩ","ẫ","ậ","ắ","ằ","ă","ặ");
+    mang[8]=new Array("đ");
+    mang[9]=new Array("è","é","ẻ","ẽ","ẹ","ê","ề","ế","ể","ễ","ệ");
+    mang[10]=new Array("ì","í","ỉ","ĩ","ị");
+    mang[11]=new Array("ò","ó","ỏ","õ","ọ","ô","ồ","ố","ổ","ỗ","ộ","ơ","ờ","ớ","ở","ỡ","ợ");
+    mang[12]=new Array("ù","ú","ủ","ũ","ụ","ư","ừ","ứ","ử","ữ","ự");
+    mang[13]=new Array("ỳ","ý","ỷ","ỹ","ỵ");
+    mang[14]=new Array("\r","\n");
+
+    for (i=0;i<=mang.length-1;i++)
+    {
+        for (i1=0;i1<=mang[i].length-1;i1++)
+        {
+			do
+			{
+			var old_text =vietnamese;
+				vietnamese=vietnamese.replace(mang[i][i1],eng[i]);
+
+
+			}while(old_text != vietnamese)
+
+        }
+    }
+
+    return ConvertBR(vietnamese);
+}
+
+  function ConvertBR(input) {
+// Converts carriage returns
+// to <BR> for display in HTML
+
+    var output = "";
+    for (var i = 0; i < input.length; i++) {
+        if ((input.charCodeAt(i) == 13) && (input.charCodeAt(i + 1) == 10)) {
+            i++;
+            output += ".";
+        } else {
+            output += input.charAt(i);
+        }
+    }
+return output.toUpperCase();
+}
+
+  	function submitForm(button,form,event){
+	  	if (form.validationEngine('validate')){
+	  		_submitForm(button,form,event);
+	  	}
+	}
+	function _submitForm(button,form,event){
+	  		button.attr({"disabled":"disabled"});
+	  		//button.addClass("button_bg slave");
+//	  		form.append('<div class="wait-modal"></div>');
+//	  		form.addClass("loading");
+	  		form.children('input[name="dse_nextEventName"]').val(event);
+	  		if (jQuery("#div-process").length != 0){
+	  			jQuery("#div-process").show();
+	  		}
+	  		form.submit();
+	}
+	function submitFormWithoutValidate(button,form,event){
+		form.validationEngine('detach');
+		_submitForm(button,form,event);
+	}
+
+
+	function moneyInWord(text,label){
+	        label.html(toEnglishCash(text.val()).toUpperCase());
+
+	}
+
+
+	function isIpad(){
+		var a = navigator.userAgent||navigator.vendor||window.opera
+		if(/android.+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od|ad)|iris|kindle|lge |maemo|midp|mmp|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|symbian|treo|up\.(browser|link)|vodafone|wap|windows (ce|phone)|xda|xiino/i.test(a)||/1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|e\-|e\/|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(di|rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|xda(\-|2|g)|yas\-|your|zeto|zte\-/i.test(a.substr(0,4))){
+			return true;
+		}
+		return false;
+	}
+
+
+	function sizeFrame() {
+		var F = document.getElementById("tranFrame");
+		var infoFrame = document.getElementById("infoFrame");
+
+		if(F.contentDocument) {
+			F.height = F.contentDocument.documentElement.scrollHeight+30; //FF 3.0.11, Opera 9.63, and Chrome
+			infoFrame.height = infoFrame.contentDocument.documentElement.scrollHeight+30; //FF 3.0.11, Opera 9.63, and Chrome
+		} else {
+			F.height = F.contentWindow.document.body.scrollHeight+30; //IE6, IE7 and Chrome
+			infoFrame.height = infoFrame.contentWindow.document.body.scrollHeight+30; //IE6, IE7 and Chrome
+		}
+	}
+
+
+	function isValidDate(txtDate)
+	{
+	    var currVal = txtDate;
+	    if(currVal == '')
+	        return false;
+
+	    var rxDatePattern = /^(\d{1,2})(\/|-)(\d{1,2})(\/|-)(\d{4})$/; //Declare Regex
+	    var dtArray = currVal.match(rxDatePattern); // is format OK?
+	    if (dtArray == null)
+	        return false;
+	    //Checks for mm/dd/yyyy format.
+	    dtMonth = dtArray[3];
+	    dtDay= dtArray[1];
+	    dtYear = dtArray[5];
+
+	    if (dtMonth < 1 || dtMonth > 12)
+	        return false;
+	    else if (dtDay < 1 || dtDay> 31)
+	        return false;
+	    else if ((dtMonth==4 || dtMonth==6 || dtMonth==9 || dtMonth==11) && dtDay ==31)
+	        return false;
+	    else if (dtMonth == 2)
+	    {
+	        var isleap = (dtYear % 4 == 0 && (dtYear % 100 != 0 || dtYear % 400 == 0));
+	        if (dtDay> 29 || (dtDay ==29 && !isleap))
+	                return false;
+	    }
+	    return true;
+	}
+	
+	function sizeFrameAdd(h) {
+		var px = parent.document.getElementById("tranFrame").style.height;
+		
+		var heights = parseInt(px.substring(0, (px.length - 2)));
+		parent.document.getElementById("tranFrame").style.height = (heights + h ) + "px";
+	}
+	
+	
+	function sizeFrameAdd(h) {
+		var px = parent.document.getElementById("tranFrame").style.height;
+		
+		var heights = parseInt(px.substring(0, (px.length - 2)));
+		parent.document.getElementById("tranFrame").style.height = (heights + h ) + "px";
+	}
+	
+	function sizeFrameMinus(h){		
+		var px = parent.document.getElementById("tranFrame").style.height;		
+		var heights = parseInt(px.substring(0, (px.length - 2)));
+		parent.document.getElementById("tranFrame").style.height = (heights - h ) + "px";
+	}
+	/*function validateEmail(sEmail) {
+		var filter = /^[A-Z0-9._-]+@[A-Z0-9.-]+\.[A-Z]{2,6}$/i;
+		if (filter.test(sEmail)) {
+			return true;
+		}else {
+			return false;
+		}
+	}*/
+	function validateEmail(email) {
+    	var re = /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i;
+    	return re.test(email);
+	}
+	
+	function getMst(subject){
+		subject = subject.toLowerCase().replace(" ", "").replace("\"", "");
+		var tin = "";
+        var arrSubject = subject.split(",");
+
+        if (subject.indexOf("mst:") < 0) {
+            return tin;
+        } else {
+            var len = arrSubject.length;
+            for (var _i = 0; _i < len; ++_i) {
+                if (0 < arrSubject[_i].indexOf("mst:")) {
+                    tin = $.trim(arrSubject[_i].substring(arrSubject[_i].indexOf("mst:") + 4,
+                     								arrSubject[_i].length));                    
+                    break;
+                }
+            }
+        }
+        return tin;
+	}

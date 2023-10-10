@@ -1,0 +1,107 @@
+﻿//************************************
+// getNowTime 用于得到系统当前日期与前月日期，
+//                      并且将其前月日期放入beginId域中，当前日期放入endId域中
+// @beginId 开始日期的输入域 id
+// @endId 结束日期的输入域 id
+//
+//************************************
+function getNowTime(beginId, endId) {
+
+	var time = getSysTime();
+	var Time = new Array(2);
+	Time = time.split('|');
+	document.getElementById(beginId).value = Time[0];
+	document.getElementById(endId).value = Time[1];
+}
+function getSysTime() {
+	var objDate = new Date();
+	var year2 = objDate.getFullYear();
+	var month2 = objDate.getMonth() + 1;
+	var dDate2 = objDate.getDate();
+	var dDate1;
+	var month1;
+	var year1 = year2;
+	if (month2 == 1) {
+		year1--;
+		month1 = 12;
+	} else {
+		month1 = month2 - 1;
+	}
+	//判断-份，并进行对应的处理
+	if (month2 == 3) {
+		if (IsPinYear(year1)) {
+			switch (dDate2) {
+			case 28:
+				dDate1 = 28;
+				break;
+			case 29:
+			case 30:
+			case 31:
+				dDate1 = 29;
+				break;
+			default:
+				dDate1 = dDate2;
+				break;
+			}
+		} else {
+			switch (dDate2) {
+			case 28:
+			case 29:
+			case 30:
+			case 31:
+				dDate1 = 28;
+				break;
+			default:
+				dDate1 = dDate2;
+				break;
+			}
+		}
+	}
+	if (month2 == 2 || month2 == 4 || month2 == 6 || month2 == 9
+			|| month2 == 11) {
+		dDate1 = dDate2;
+	}
+	if (month2 == 1 || month2 == 5 || month2 == 7 || month2 == 8
+			|| month2 == 10 || month2 == 12) {
+		if (month2 == 1 || month2 == 8) {
+			switch (dDate2) {
+			case 31:
+				dDate1 = 31;
+				break;
+			default:
+				dDate1 = dDate2;
+				break;
+			}
+		} else {
+			switch (dDate2) {
+			case 31:
+				dDate1 = 30;
+				break;
+			default:
+				dDate1 = dDate2;
+				break;
+			}
+		}
+	}
+	if (month1 < 10) {
+		month1 = "0" + month1.toString();
+	}
+	if (month2 < 10) {
+		month2 = "0" + month2.toString();
+	}
+	if (dDate1 < 10) {
+		dDate1 = "0" + dDate1.toString();
+	}
+	if (dDate2 < 10) {
+		dDate2 = "0" + dDate2.toString();
+	}
+	// var time1 = year1.toString()+month1+dDate1;
+	// var time2 = year2.toString()+month2+dDate2;
+	var time1 = getDateFmt(year1.toString(),month1,dDate1);
+	var time2 = getDateFmt(year2.toString(),month2,dDate2) ;
+	var time = time1 + "|" + time2;
+	return time;
+}
+function getDateFmt(yyyy, mm, dd) {
+	return dd + "/" + mm + "/" + yyyy;
+}

@@ -1,0 +1,305 @@
+﻿var flag = true;
+var arr1=new Array(""," Nghìn"," Triệu"," Tỷ");
+var arr2=new Array("Không","Mười","Hai Mươi","Ba Mươi","Bốn Mươi","Năm Mươi","Sáu Mươi","Mảy Mươi","Tám Mươi","Chín Mươi");
+var arr3=new Array("Không","Một","Hai","Ba","Bốn","Năm","Sáu","Bảy","Tám","Chín");
+var arr4=new Array("Mười","Mười Một","Mười Hai","Mười Ba","Mười Bốn","Mười Lăm","Mười Sáu","Mười Bảy","Mười Tám","Mười Chín");
+var _point="phẩy";
+
+ var mangso = ['Không','Một','Hai','Ba','Bốn','Năm','Sáu','Bảy','Tám','Chín'];
+ 
+ function dochangchuc(so,daydu)
+    {
+        var chuoi = "";
+        chuc = Math.floor(so/10);
+        donvi = so%10;
+        if (chuc>1) {
+            chuoi = " " + mangso[chuc] + " Mươi";
+            if (donvi==1) {
+                chuoi += " Mốt";
+            }
+        } else if (chuc==1) {
+            chuoi = " Mười";
+            if (donvi==1) {
+                chuoi += " Một";
+            }
+        } else if (daydu && donvi>0) {
+            chuoi = " Lẻ";
+        }
+        if (donvi==5 && chuc>1) {
+            chuoi += " Lăm";
+        } else if (donvi>1||(donvi==1&&chuc==0)) {
+            chuoi += " " + mangso[ donvi ];
+        } 
+        return chuoi;
+    }
+    function docblock(so,daydu)
+    {
+        var chuoi = "";
+        tram = Math.floor(so/100);
+        so = so%100;
+        if (daydu || tram>0) {
+            chuoi = " " + mangso[tram] + " Trăm";
+            chuoi += dochangchuc(so,true);
+        } else {
+            chuoi = dochangchuc(so,false);
+        }
+        return chuoi;
+    }
+    function dochangtrieu(so,daydu)
+    {
+        var chuoi = "";
+        trieu = Math.floor(so/1000000);
+        so = so%1000000;
+        if (trieu>0) {
+            chuoi = docblock(trieu,daydu) + " Triệu";
+            daydu = true;
+        }
+        nghin = Math.floor(so/1000);
+        so = so%1000;
+        if (nghin>0) {
+            chuoi += docblock(nghin,daydu) + " Nghìn";
+            daydu = true;
+        }
+        if (so>0) {
+            chuoi += docblock(so,daydu);
+        }
+        return chuoi;
+    }
+    function docso(so)
+    {
+        if (so==0) return " Không";
+        var chuoi = "", hauto = "";
+        do {
+            ty = so%1000000000;
+            so = Math.floor(so/1000000000);
+            if (so>0) {
+                chuoi = dochangtrieu(ty,true) + hauto + chuoi;
+            } else {
+                chuoi = dochangtrieu(ty,false) + hauto + chuoi;
+            }
+            hauto = " Tỷ";
+        } while (so>0);
+        return chuoi;
+    }
+
+function English(num){
+}
+
+function toEnglishCash(so){
+	so = so.replace(/[^0-9.]/g, '');
+	 if (so==0 || so=='') return "";
+        var chuoi = "", hauto = "";
+        do {
+            ty = so%1000000000;
+            so = Math.floor(so/1000000000);
+            if (so>0) {
+                chuoi = dochangtrieu(ty,true) + hauto + chuoi;
+            } else {
+                chuoi = dochangtrieu(ty,false) + hauto + chuoi;
+            }
+            hauto = " Tỷ";
+        } while (so>0);
+        return chuoi.toUpperCase() +" ĐỒNG";
+}
+
+function checkNumber(sAmount){
+	var amtExp=/^([0-9,.])*$/;
+	return amtExp.test(sAmount);
+}
+
+function toStdAmount(sAmount)
+{
+	
+	var sComma = /\,/gi;
+	var sResult = sAmount.replace(sComma,"");
+	var iDotIndex = sResult.indexOf('.');
+	var iLength = sResult.length;
+	var toMatchNaNum = /\D/;
+	if ((iDotIndex!=-1&&(iLength-iDotIndex>3||toMatchNaNum.test(sResult.slice(0,iDotIndex))))
+		||toMatchNaNum.test(sResult.slice(iDotIndex+1,iLength))){
+
+		flag=false;
+		return '错误的金额!';
+	}
+	else
+	{
+		if (iDotIndex==-1)
+			sResult = sResult+'.00';
+		else if (iDotIndex==0)
+		{
+			if (iLength-iDotIndex==1) sResult='0'+sResult+'00';
+			if (iLength-iDotIndex==2) sResult='0'+sResult+'0';
+			if (iLength-iDotIndex==3) sResult='0'+sResult;
+		}
+		else
+		{
+			if (iLength-iDotIndex==2) sResult=sResult+'0';
+			if (iLength-iDotIndex==1) sResult=sResult+'00';
+		}
+		var sTemp = "";
+		sTemp = sResult.slice(0,iDotIndex);
+			
+		var iTemp = new Number(sTemp);
+		sTemp = iTemp.toString();
+		if (sTemp.length>16) {flag = false;return '太长的金额!';}
+		iDotIndex = sResult.indexOf('.');
+
+		sResult = sTemp+sResult.slice(iDotIndex);
+		return sResult;
+	}
+}
+
+function toChineseCash(sAmount)
+{
+	var value = toStdAmount(sAmount);
+	if(!flag) {flag = true;return value;}
+	var sCN_Num = new Array("零","壹","贰","叁","肆","伍","陆","柒","捌","玖");
+	var unit = new Array('元', '万', '亿', '万');
+	var subunit = new Array('拾', '佰', '仟');
+	var sCNzero = '零';
+
+	var result = "";
+
+	var iDotIndex = value.indexOf('.');
+
+	var sBeforeDot = value.slice(0, iDotIndex);
+	var sAfterDot = value.slice(iDotIndex);
+
+	var len = 0;
+	//before dot
+	len = sBeforeDot.length;
+	var i = 0, j = 0, k = 0; //j is use to subunit,k is use to unit
+	var oldC = '3';
+	var cc = '0';
+	result = unit[0] + result;
+
+	var oldHasN = false;  
+	var hasN = false;
+	var allZero = true;
+		
+	for (i = 0; i < len; i++) {
+		if (j == 0 && i != 0) {
+			if (!hasN) 
+			{
+				if ((k % 2) == 0) result = result.slice(1);
+			}
+			else
+			{
+				if (oldC == '0') result = sCNzero + result;
+			}
+			result = unit[k] + result;
+			//oldC = '3';
+			oldHasN = hasN;
+			hasN = false;
+		}
+		cc = sBeforeDot.charAt(len - i - 1);
+		if (oldC == '0' && cc != oldC) 
+		{
+			if (hasN) result = sCNzero + result;
+		}
+		if (cc != '0')
+		{
+			if (j != 0)
+				result = subunit[j - 1] + result;
+			var dig = '0';
+			dig = sCN_Num[cc];
+
+			if (dig == '0')
+				return false;
+			hasN = true;
+			allZero = false;
+			result = dig + result;
+		}
+		oldC = cc;
+		j++;
+		if (j == 4)
+		{
+			k++;
+			j = 0;
+		}
+	}
+	if (allZero) {
+		result = "零元";
+	}
+	else {
+		var bb = 0;
+		if (!hasN) {
+			bb++;
+			if (!oldHasN) {
+				bb++;
+			}
+		}
+		if (bb != 0)
+			result = result.slice(bb);
+		if (result.charAt(0) == '零')
+			result = result.slice(1);
+	}
+
+	//after dot
+	sAfterDot = sAfterDot.slice(1);
+	len = sAfterDot.length;
+	var corn = new Array('0','0');			
+	var cornunit = new Array('角', '分');
+	var n = 0; //j is use to subunit,k is use to unit
+	var dig = '0';
+	corn[0] = sAfterDot.charAt(0);
+	if (len > 1)
+		corn[1] = sAfterDot.charAt(1);
+	else
+		corn[1] = '0';
+	if ((corn[0] ==  '0') && (corn[1] == '0')) 
+		return result += '整';
+	else
+		if (allZero) result = "";
+	for (i = 0; i < 2; i++)
+	{
+		var curchar = corn[i];
+		dig = sCN_Num[curchar];
+
+		if (i==0)
+		{
+			if(result!=""||curchar!='0')
+				result += dig;
+			if(curchar!='0')
+			{
+				result += cornunit[0];
+			}
+		}
+		if (i==1&&curchar!='0') result = result+dig+cornunit[1];
+	}
+
+	return result;
+}
+
+
+	function toEnglishCashUSD(sAmount){
+	var roundAmount="",decimalAmount="";
+		var pointPos=sAmount.indexOf(".");
+	    
+	           
+	        if(pointPos==-1){
+	            roundAmount=sAmount;
+		}else{
+			roundAmount=sAmount.substring(0,pointPos);
+			decimalAmount=sAmount.substring(pointPos+1,sAmount.length);
+		}
+	           while(decimalAmount!=""&&decimalAmount[decimalAmount.length-1]=="0"){
+		decimalAmount=decimalAmount.substring(0, decimalAmount.length-1);
+	        }
+	           var chuoi=  toEnglishCash(roundAmount);
+		
+	        if(decimalAmount!=""){
+	        
+	        var chuoidot= toEnglishCash(decimalAmount);
+	        if(decimalAmount.length==2 && decimalAmount.substring(0,1)=="0"){
+	        chuoidot= "không "+chuoidot;
+	        }else if(decimalAmount.length==3 && decimalAmount.substring(0,1)=="0"){
+	        chuoidot= "không trăm "+chuoidot;
+	        }else if(decimalAmount.length==4 && decimalAmount.substring(0,1)=="0"){
+	        chuoidot= "không nghìn "+chuoidot;
+	        }
+	       chuoi=chuoi+" PHẨY " +chuoidot;
+	        }
+		return chuoi;
+		
+	}

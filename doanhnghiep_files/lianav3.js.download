@@ -1,0 +1,529 @@
+﻿//Thanks to Jinzw!~
+//invented by SuMm3r(Wangbin)@e-Channels
+//first created on 2005-11-08
+//ONLY for IE6+  :~(
+
+//GlobalEvent 全局事件：设置所有的输入框和按钮的事件onmouseover onmouseout
+//请在body标签中加入 onload="globalevent()"
+
+function globalevent() {
+	//menu2全部隐藏
+	//for (j=2;j<7;j++) {
+	//document.getElementById('menu2_'+j).style.display='none';
+	//}
+	document.getElementById('cuspos').style.display='none';
+}
+/**
+示提示语句
+**/
+function isfocus(name)
+{
+	document.getElementById(name+'Err').style.display='none';
+	var ts = document.getElementById(name);
+	ts.style.display='';
+	ts.className ='tishi_on';
+}
+function isblur(name)
+{
+	var ts = document.getElementById(name);
+	ts.className ='tishi';
+}
+/*
+function textover() {
+var obj = window.event.srcElement;
+obj.className='input_text_focus';
+}
+
+function textout() {
+var obj = window.event.srcElement;
+obj.className='input_text';
+}
+*/
+function buttonover() {
+	var obj = window.event.srcElement;
+	obj.className='button_hover';
+}
+
+function buttonout() {
+	var obj = window.event.srcElement;
+	obj.className='button';
+}
+
+
+
+//快捷菜单一级菜单事件
+function quick1(i) {
+	var menu1 = document.getElementById('quick1_'+i);
+	var menu2 = document.getElementById('quick2_'+i);
+	if (menu2.style.display=='none') {
+		menu1.className='info_kj_jian';
+		menu2.style.display='';
+
+	} else {
+		menu1.className='info_kj_jia';
+		menu2.style.display='none';
+
+	}
+}
+
+//test2.htm文件首页设置一级菜单事件
+function perset(aMenuCode) {
+
+	//event.srcElement.className='info_kj_jian';
+	var tdElements = document.all.tags("tr");
+	var tdas = document.all.tags("a");
+	for (var i = 0; i < tdElements.length; i++) {
+		for (var j = 0; j < tdas.length; j++) {
+			var tdElmt = tdElements[i];
+			var tda = tdas[j];
+			if (tdElmt.id != '') {
+				var tdArray = tdElmt.id.split('_');
+				var aArray = tda.id.split('_');
+				if (tdArray[1] == aMenuCode) {
+					//if (event.srcElement.getAttribute("className")=="info_kj_jia")
+					//{
+					//	event.srcElement.className='info_kj_jian';
+					//}
+					if(tda.id != ''){
+						if(aArray[1] == aMenuCode)
+						{
+							tda.className = 'setting_cd_jian';
+						}
+					else
+						{
+							if(aArray[0] == 'b')
+							tda.className = 'setting_cd_jia2';
+						else{
+							tda.className = 'setting_cd_jia';
+						}
+					}
+				}
+				tdElmt.style.display = 'block';
+			} else if(tdArray[0]=='perset1') {
+				tdElmt.style.display = 'block';
+			}
+		else{
+			tdElmt.style.display = 'none';
+		}
+	}
+}
+}
+//parent.mainframe.location.href = 'form.htm';
+parent.sizeChange();
+}
+//test2.htm文件首页设置二级菜单事件
+function perset2(aMenuCode) {
+	var tdElements = document.all.tags("tr");
+	var tdas = document.all.tags("a");
+	for (var i = 0; i < tdElements.length; i++) {
+		for (var j = 0; j < tdas.length; j++) {
+			var tdElmt = tdElements(i);
+			var tda = tdas(j);
+			if (tdElmt.id != '') {
+				var tdArray = tdElmt.id.split('_');
+				var aArray = tda.id.split('_');
+				if (tdArray[0] == 'perset3') {
+					if (tdArray[1] == aMenuCode) {
+						if(tda.id != ''){
+							if(aArray[1] == aMenuCode)
+							{
+								tda.className = 'setting_cd_jian2';
+							}
+						else
+							{
+								if(aArray[0] == 'b'){
+									tda.className = 'setting_cd_jia2';
+								}
+
+							}
+							tdElmt.style.display = 'block';
+						}
+					} else if(tdArray[0]=='perset1') {
+						tdElmt.style.display = 'block';
+					}else if(tdArray[0]=='perset2') {
+						tdElmt.style.display = 'block';
+					}
+				else {
+					tdElmt.style.display = 'none';
+				}
+			}
+		}
+	}
+}
+//parent.mainframe.location.href = 'form.htm';
+parent.sizeChange();
+}
+//custPersonalSetting.htm文件首页设置一级菜单事件
+function pset(aMenuCode) {
+
+	//event.srcElement.className='info_kj_jian';
+	var tdElements = document.all.tags("tr");
+	for (var i = 0; i < tdElements.length; i++) {
+		var tdElmt = tdElements(i);
+		if (tdElmt.id != '') {
+			var tdArray = tdElmt.id.split('_');
+			if (tdArray[1] == aMenuCode) {
+				//if (event.srcElement.getAttribute("className")=="info_kj_jia")
+				//{
+				//	event.srcElement.className='info_kj_jian';
+				//}
+
+				tdElmt.style.display = 'block';
+			} else if(tdArray[0]=='perset1') {
+				tdElmt.style.display = 'block';
+			}
+		else{
+			tdElmt.style.display = 'none';
+		}
+	}
+}
+//parent.mainframe.location.href = 'form.htm';
+}
+//custPersonalSetting.htm文件首页设置二级菜单事件
+function pset2(aMenuCode) {
+	var tdElements = document.all.tags("tr");
+	for (var i = 0; i < tdElements.length; i++) {
+		var tdElmt = tdElements(i);
+		if (tdElmt.id != '') {
+			var tdArray = tdElmt.id.split('_');
+			if (tdArray[0] == 'perset3') {
+				if (tdArray[1] == aMenuCode) {
+					tdElmt.style.display = 'block';
+				} else if(tdArray[0]=='perset1') {
+					tdElmt.style.display = 'block';
+				}else if(tdArray[0]=='perset2') {
+					tdElmt.style.display = 'block';
+				}
+			else {
+				tdElmt.style.display = 'none';
+			}
+		}
+	}
+}
+//parent.mainframe.location.href = 'form.htm';
+}
+
+function moveLeftFrame(imgleft,imgright,yqti,slide) {
+	var yq = document.getElementById(yqti);
+	var sl = document.getElementById(slide);
+	if(yq.style.display=='none')
+	{
+		$("#Page_right").width($("#Page_right").width()-186)
+		yq.style.display='inline';
+		sl.alt='点击隐藏';
+		if ($("#slide").attr("apt")=="1"){
+			sl.src=imgleft;
+		}else{
+			sl.src=imgright;
+		}
+	}
+else
+	{
+		yq.style.display='none';
+		
+		$("#Page_right").width($("#Page_right").width()+186)
+		sl.alt='点击显示';
+		if ($("#slide").attr("apt")=="1"){
+		sl.src=imgright;
+		}else{
+			sl.src=imgleft;
+		}
+	}
+}
+
+
+function pd_err() {
+	if(document.getElementById('tf_2').value == ""){
+		document.getElementById('ts_2Err').style.display='';
+		document.getElementById('ts_2').style.display='none';
+		//document.getElementById('tf_2').focus();
+		return false;
+	}
+	if(document.getElementById('tf_3').value == ""){
+		document.getElementById('ts_3Err').style.display='';
+		document.getElementById('ts_3').style.display='none';
+		//document.getElementById('tf_3').focus();
+		return false;
+	}
+	if(document.getElementById('tf_5').value == ""){
+		document.getElementById('ts_5Err').style.display='';
+		document.getElementById('ts_5').style.display='none';
+		//document.getElementById('tf_5').focus();
+		return false;
+	}
+	if(document.getElementById('tf_6').value == ""){
+		document.getElementById('ts_6Err').style.display='';
+		document.getElementById('ts_6').style.display='none';
+		//document.getElementById('tf_6').focus();
+		return false;
+	}
+	//document.location='confirm.htm';
+	//document.location='account.htm';
+	//document.location='result.htm';
+	return true;
+}
+
+function pseta(aMenuCode) {
+
+	//event.srcElement.className='info_kj_jian';
+	var tdElements = document.all.tags("tr");
+	var tdas = document.all.tags("a");
+	for (var i = 0; i < tdElements.length; i++) {
+		for (var j = 0; j < tdas.length; j++) {
+			var tdElmt = tdElements(i);
+			var tda = tdas(j);
+			if (tdElmt.id != '') {
+				var tdArray = tdElmt.id.split('_');
+				//alert("tdArray="+tdArray);
+				var aArray = tda.id.split('_');
+				//alert("aArray="+aArray);
+				if (tdArray[1] == aMenuCode) {
+					//if (event.srcElement.getAttribute("className")=="info_kj_jia")
+					//{
+					//	event.srcElement.className='info_kj_jian';
+					//}
+					if(tda.id != ''){
+						if(aArray[1] == aMenuCode)
+						{
+							tda.className = 'setting_cd_jian';
+						}
+					else
+						{
+							if(aArray[0] == 'b')
+							tda.className = 'setting_cd_jia2';
+						else{
+							tda.className = 'setting_cd_jia';
+						}
+					}
+				}
+				tdElmt.style.display = 'block';
+			} else if(tdArray[0]=='perset1') {
+				//tdElmt.style.display = 'block';
+			}
+		else{
+			tdElmt.style.display = 'none';
+		}
+	}
+}
+}
+//parent.mainframe.location.href = 'form.htm';
+parent.sizeChange();
+}
+
+//二级菜单样式变换
+function perset22(aMenuCode,tableID) {
+	var tds = document.getElementById(tableID)
+	var tdElements = tds.getElementsByTagName("tr");
+	var tdas = tds.getElementsByTagName("a");
+	var count = 0;
+	var bMenuNum = 0;
+	for(var k=0;k<tdElements.length;k++)
+	{
+		var tElmt = tdElements[k];
+		var tArray = tElmt.id.split('_');
+		if(tArray[1]==aMenuCode)
+		{
+			bMenuNum++;
+		}
+	}
+	for (var i = 0; i < tdElements.length; i++)
+	{
+		for (var j = 0; j < tdas.length; j++)
+		{
+			var tdElmt = tdElements[i];
+			var tda = tdas[j];
+			if (tdElmt.id != '')
+			{
+				var tdArray = tdElmt.id.split('_');
+				var aArray = tda.id.split('_');
+				if (tdArray[1] == aMenuCode)
+				{
+					if(tda.id != '')
+					{
+						if(aArray[1] == aMenuCode && aArray[0] == 'b')
+						{
+							if((tdArray[0]=='perset2' || tdArray[0]=='perset3'))
+							{
+								if(tda.className == 'setting_cd_jian2'&&bMenuNum>0)
+								{
+									if(0==--bMenuNum)
+									{
+										tda.className = 'setting_cd_jia2';
+									}
+									tdElmt.style.display = 'none';
+								}
+								if(tda.className == 'setting_cd_jia2'&&bMenuNum>0)
+								{
+									if(0==--bMenuNum)
+									{
+										tda.className = 'setting_cd_jian2';
+									}
+									tdElmt.style.display = '';
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	parent.sizeChange();
+}
+
+/*系统管理树型结构样式变换*/
+function persetall(aMenuCode,tableID) {
+	var tds = document.getElementById(tableID);
+	var tdElements = tds.getElementsByTagName("tr");
+	var tdas = tds.getElementsByTagName("a");
+	var bMenuNum = 0;
+	for(var k=0;k<tdElements.length;k++)
+	{
+		var tElmt = tdElements[k];
+		if (tElmt.id != '')
+		{
+			var tArray = tElmt.id.split('_');
+			if(tArray[1]==aMenuCode&&tArray[2]!=null)
+			{
+				bMenuNum++;
+			}
+		}
+	}
+	for (var i = 0; i < tdElements.length; i++) {
+		for (var j = 0; j < tdas.length; j++) {
+			var tdElmt = tdElements[i];
+			var tda = tdas[j];
+			if (tdElmt.id != '')
+			{
+				var tdArray = tdElmt.id.split('_');
+				var aArray = tda.id.split('_');
+				if(tda.id != '')
+				{
+					if(aArray[1] == aMenuCode && aArray[0] == 'a'&& tdArray[1]==aMenuCode)
+					{
+						if(tdArray[0]=='perset2' || tdArray[0]=='perset3')
+						{
+							if( tda.className=='setting_cd_jian'&&bMenuNum>0)
+							{
+								tdElmt.style.display = 'none';
+								if(0==--bMenuNum)
+								{
+									tda.className ='setting_cd_jia';
+								}
+							}
+							if(tda.className=='setting_cd_jia'&&bMenuNum>0)
+							{
+								tdElmt.style.display='';
+								if(0==--bMenuNum)
+								{
+									tda.className='setting_cd_jian';
+								}
+							}
+						}
+					}
+					if(tdArray[2]==aArray[1]&&tdArray[1]==aMenuCode&&aArray[0]=='b'&& tda.className=='setting_cd_jian2')
+					{ 
+						tda.className='setting_cd_jia2';
+					}
+					if(tdArray[1]==aArray[1]&&tdArray[0]=='perset3'&&tda.className=='setting_cd_jia2')
+					{
+						tdElmt.style.display='none';
+					}
+				}
+			}
+		}
+	}
+	parent.sizeChange();
+}
+/*皮肤切换*/
+/*读取数据到对比框*/
+function SwitchCreateStyle(StyleUrl){
+	createCookie("Style",StyleUrl);
+}
+/*改变页面的样式*/
+function EditPageStyle(values){
+	var PageFar = parent.$("#StyleLink");
+	var iframe_left = parent.infoFrame.window.$("#StyleLink");
+	var iframe_right = parent.tranFrame.window.$("#StyleLink");
+	if (parent.StyleAction==1){
+			var values1 = "css/"+values+"/lianav3.css";
+	}else if (parent.StyleAction==2) {
+			var values1 = "../css/"+values+"/lianav3.css";
+	}else{
+		var values1 = "../../css/"+values+"/lianav3.css";
+	}
+	if (parent.infoFrame.StyleAction==1){
+			var values2 = "css/"+values+"/lianav3.css";
+	}else if (parent.infoFrame.StyleAction==2) {
+			var values2 = "../css/"+values+"/lianav3.css";
+	}else{
+		var values2 = "../../css/"+values+"/lianav3.css";
+	}
+	if (parent.tranFrame.StyleAction==1){
+			var values3 = "css/"+values+"/lianav3.css";
+	}else if (parent.tranFrame.StyleAction==2) {
+			var values3 = "../css/"+values+"/lianav3.css";
+	}else{
+		var values3 = "../../css/"+values+"/lianav3.css";
+	}
+	PageFar.attr("href",values1);
+	iframe_left.attr("href",values2);
+	iframe_right.attr("href",values3);
+}
+/*--------通用--------*/
+/*创造Cookies*/
+function createCookie(name,value,days,Tdom){
+	var Tdom=(Tdom)?Tdom:"/";
+	if (days){
+		var date = new Date();
+		date.setTime(date.getTime()+(days*24*60*60*1000));
+		var expires = "; expires="+date.toGMTString();
+	}else{
+		var expires = "";
+	}
+	document.cookie = name+"="+value+expires+"; path="+Tdom;
+}
+/*读取Cookies*/
+function readCookie(name){
+	var nameEQ = name + "=";
+	var ca = document.cookie.split(';');
+	for(var i=0;i < ca.length;i++){
+		var c = ca[i];
+		while (c.charAt(0)==' ') {c = c.substring(1,c.length);}
+		if (c.indexOf(nameEQ) == 0) {return c.substring(nameEQ.length,c.length);}
+	}
+	return null;
+}
+/*读取数据到创建cookies*/
+function StyleDataRead(){
+	var coo=readCookie("Style");
+	if (coo==null){coo="";createElementCss();}else{
+		createElementCss(coo);
+	}
+}
+/*动态加载CSS*/
+function createElementCss(StyleUrl) {
+	if (StyleUrl==""||StyleUrl==null){
+		if (StyleAction==1){
+			StyleUrl = "css/default/lianav3.css";
+		}else if (StyleAction==2){
+			StyleUrl = "../css/default/lianav3.css";
+		}else{
+			StyleUrl = "../../css/default/lianav3.css";
+		}
+	}else{
+		if (StyleAction==1){
+			StyleUrl = "css/"+StyleUrl+"/lianav3.css";
+		}else if (StyleAction==2){
+			StyleUrl = "../css/"+StyleUrl+"/lianav3.css";
+		}else{
+			StyleUrl = "../../css/"+StyleUrl+"/lianav3.css";
+		}
+	}
+    var styleTag = document.createElement("link");
+    styleTag.setAttribute('type', 'text/css');
+    styleTag.setAttribute('rel', 'stylesheet');
+	styleTag.setAttribute('id', 'StyleLink');
+    styleTag.setAttribute('href', StyleUrl);
+    var headerTag = document.getElementsByTagName('head')[0];
+    headerTag.appendChild(styleTag);
+}

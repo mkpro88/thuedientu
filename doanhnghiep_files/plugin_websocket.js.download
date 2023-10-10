@@ -1,0 +1,245 @@
+var _eid_promises = {};
+var st_plugin = {
+  _dataToSign : {},
+  _statusLog : [],
+  _logHandler : null,
+  _defaultPort : 8768,
+  _backupPort : 8769,
+  _totalConnect : 0,
+  _log : function(msg){
+      this._statusLog.push(msg);
+      if(this._logHandler != null)
+          this._logHandler(msg);
+  },
+  
+  setLogHandler : function(handler){
+      if(!(handler instanceof Function))
+          throw 'Tham so setLogHandler phai la mot ham.';
+      this._logHandler = handler;
+      return this;
+  },
+  
+  messagePromiseXTS : function(msg) {
+      return new Promise(function(resolve, reject) {
+          // amend with necessary metadata
+          msg['nonce'] = msg.CODE;
+          msg['src'] = 'plugin_websocket.js';
+          // send message
+          window.postMessage(msg, "*");
+          // and store promise callbacks
+          _eid_promises[msg.CODE] = {
+              resolve: resolve,
+              reject: reject
+          };
+      });
+  },
+  
+  getCertificateNTDT : function() {
+	  this._dataToSign = {
+			CODE: 'CER_002'
+	  };
+      console.log("getCertificate()");
+      return this;
+  },
+  
+  signNTDT : function(subCode, base64Value, serialNumber, gdtSignPath, bankSignPath, checkTin, tinValid, dateSigning, timezoneSigning) {
+  	if(subCode=="00"){
+  		this._dataToSign = {
+  			CODE: 'NTDT_CER_001', 
+  			BASE64_VALUE: base64Value, 
+  			SERIAL_NUMBER: serialNumber, 
+  			GDT_SIGN_PATH: gdtSignPath, 
+  			BANK_SIGN_PATH: bankSignPath, 
+  			CHECK_CERT_SERIAL: serialNumber, 
+  			CHECK_TIN: checkTin, 
+  			TIN_VALID: tinValid, 
+  			DATE_SIGNING: dateSigning, 
+  			TIMEZONE_SIGNING: timezoneSigning
+  		};
+  		
+        console.log("signNTDT()_00");
+        return this;
+  	}else{
+  		//var msg = {type: 'SIGN', cert: cert.hex, hash: hash.hex, hashtype: hash.type, lang: options.lang};
+  		this._dataToSign = {
+			CODE: 'NTDT_CER_002', 
+			BASE64_VALUE: base64Value, 
+			SERIAL_NUMBER: serialNumber, 
+			NTDT_SIGN_CODE:subCode, 
+			GDT_SIGN_PATH:gdtSignPath, 
+			BANK_SIGN_PATH: bankSignPath, 
+			CHECK_CERT_SERIAL: serialNumber, 
+			CHECK_TIN:checkTin, 
+			TIN_VALID:tinValid, 
+			DATE_SIGNING:dateSigning, 
+			TIMEZONE_SIGNING:timezoneSigning
+		};
+  		
+        console.log("signNTDT()");
+        return this;
+  	}
+  },
+  
+  signOnlline : function (code, pincode, base64Value, serialNumber, checkCertSerialNumber,
+        checkTin, tinValid, dateSigning, timezoneSigning, pkcs11LibraryNameList) {
+        this._dataToSign = {
+            CODE: code,
+            PIN_CODE: pincode,
+            BASE64_VALUE: base64Value,
+            SERIAL_NUMBER: serialNumber,
+            CHECK_CERT_SERIAL: checkCertSerialNumber,
+            CHECK_TIN: checkTin,
+            TIN_VALID: tinValid,
+            DATE_SIGNING: dateSigning,
+            TIMEZONE_SIGNING: timezoneSigning,
+            PKCS_11_LIBRARY_NAME_LIST: pkcs11LibraryNameList
+        };
+        return this;
+    },
+  
+  addDataGetCertificateOnlline : function (_code, _checkCertSerialNumber, _activeCertSerialNumber,_pkcs11LibraryNameList,_checkTin, _tinValid,_dateSinging, _timezoneSinging) {
+        this._dataToSign = {
+            CODE: _code,
+            CHECK_CERT_SERIAL: _checkCertSerialNumber,
+            ACTIVE_CERT_SERIAL: _activeCertSerialNumber,
+            PKCS_11_LIBRARY_NAME_LIST: _pkcs11LibraryNameList,
+            CHECK_TIN: _checkTin,
+            TIN_VALID: _tinValid,
+            DATE_SIGNING: _dateSinging,
+            TIMEZONE_SIGNING: _timezoneSinging
+        };
+        return this;
+  },
+  
+  offlineSignXTS : function(code, loaiHSo, urlFileName, xpath_data, xpath_sign, serialNumber, checkCertSerialNumber, checkTin, tinValid, dateSigning, timezoneSigning, pkcs11LibraryNameList) {
+	  this._dataToSign = {
+          CODE: code,
+          LOAI_HSO: loaiHSo,
+          URL_FILE_NAME: urlFileName,
+          XPATH_DATA: xpath_data,
+          XPATH_SIGN: xpath_sign,
+          SERIAL_NUMBER: serialNumber,
+          CHECK_CERT_SERIAL: checkCertSerialNumber,
+          CHECK_TIN: checkTin,
+          TIN_VALID: tinValid,
+          DATE_SIGNING: dateSigning,
+          TIMEZONE_SIGNING: timezoneSigning,
+          PKCS_11_LIBRARY_NAME_LIST: pkcs11LibraryNameList
+      };
+      return this;
+  },
+  
+  offlineUploadXTS : function(_code, _action, _urlFileName, _uploadFileName, _chunksize, _cookieName, _cookieValue,
+        _certChain,_signature, _activeTin, _xPath_data, _xPath_sign, _validXML) {
+	  this._dataToSign = {
+            CODE: _code,
+            REQUEST_URL_ACTION: _action,
+            URL_FILE_NAME: _urlFileName,
+            UPLOADED_FILE_NAME: _uploadFileName,
+            CHUNKSIZE: _chunksize,
+            COOKIE_NAME: _cookieName,
+            COOKIE_VALUE: _cookieValue,
+            CERT_CHAIN: _certChain,
+            SIGNATURE:_signature,
+            ACTIVE_TIN: _activeTin,
+            XPATH_DATA: _xPath_data,
+            XPATH_SIGN: _xPath_sign,
+            VALID_XML: _validXML
+        };
+        //console.log(" ::: offlineUpload() ::: ", _code);
+	  return this;
+    },
+  
+  offlineChooseFileXTS : function(_code) {
+	  this._dataToSign = {
+          CODE: _code
+      };
+	  return this;
+  },
+  checkupdate : function(_code,_url) {
+	  this._dataToSign = {
+          CODE: _code,
+          ROOT_URL:_url
+      };
+	  return this;
+  },
+ 
+  cleanData : function(){
+      this._dataToSign = {};
+      return this;
+  },
+  
+  addData : function(_code, _action){
+      this._dataToSign = {
+      	CODE: _code,
+      	REQUEST_URL_ACTION: _action
+      };
+      return this;
+  },
+  sign : function(resultsHandler, errorHandler){
+
+	var isIE = /*@cc_on!@*/false || !!document.documentMode;
+      var wsEndpoint = 'ws://127.0.0.1:'+ this._defaultPort +'/plugin/sign';
+
+      if(isIE == true) wsEndpoint = 'wss://localhost:'+ this._defaultPort +'/plugin/sign';
+  
+      if(!(resultsHandler instanceof Function))
+          throw 'Tham so resultsHandler phai la mot ham.';
+      var signService = new WebSocket(wsEndpoint);
+      this._log(this._totalConnect > 0 ? 'Ket noi plugin client voi cong phu thanh cong.' : 'Ket noi plugin client thanh cong.');
+      signService.onmessage = function(event){
+          this._log('Du lieu nhan duoc tu plugin client: ' + event.data);
+          var dataJson = JSON.parse(event.data);
+          if(dataJson.error != null)
+              errorHandler(dataJson.error);
+          else
+              resultsHandler(dataJson);
+          signService.close();
+      }.bind(this);
+      signService.onopen = function(){
+          var data =  this._dataToSign;
+          var dataS = JSON.stringify(data);
+          signService.send(dataS);
+          this._log('Du lieu truyen len plugin client: ' + dataS);
+      }.bind(this);
+      signService.onclose = function(){
+		  this._log('Dong ket noi.');
+      }.bind(this);
+      signService.onerror = function(){
+		  this._log('Khong the ket noi den service:' + wsEndpoint + ' ung dung plugin client.');
+                  if(this._totalConnect >= 1){
+                    alert("Chưa bật plugin ký số.");
+                    jQuery('#content_body').hideLoading();
+                  }
+		  if(this._totalConnect < 1){
+			  this._defaultPort = this._backupPort;
+			  this._totalConnect = this._totalConnect + 1;
+			  this.sign(resultsHandler, errorHandler);
+		  }
+		  signService.close();
+      }.bind(this);
+      return this;
+  },
+  
+
+  checkInstall : function(resultsHandler, errorHandler){
+      var wsEndpoint = 'ws://127.0.0.1:'+ this._defaultPort +'/plugin/sign';
+      if(!(resultsHandler instanceof Function)){
+          throw 'Tham so resultsHandler phai la mot ham.';
+	  }
+      var signService = new WebSocket(wsEndpoint);
+		  signService.onerror = function(){
+			 alert('Khong the ket noi den service:' + wsEndpoint + ' ung dung plugin client.');
+			 this._log('Khong the ket noi den service:' + wsEndpoint + ' ung dung plugin client.');
+			  if(this._totalConnect < 1){
+				  this._defaultPort = this._backupPort;
+				  this._totalConnect = this._totalConnect + 1;
+				  alert(' this._totalConnect3 ' +  this._totalConnect);
+				  this.checkInstall(resultsHandler, errorHandler);
+			  }
+			  signService.close();
+	      }.bind(this);
+	      alert(' this._totalConnect ' +  this._totalConnect);
+      return this;
+  } 
+};
