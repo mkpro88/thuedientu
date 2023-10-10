@@ -1,0 +1,106 @@
+(function($){
+ $.fn.hoverpass = function(options) {
+	//Our default options
+	var defaults = {
+		bullet: "&bull;", //which should be the "masking" character
+		font: "'Lucida Console', monospace", //please just use MONOSPACE fonts
+		bg: "#fff", // background style for bullets
+		free: "", // add your own additional styling here
+		freeBul: "float: left; overflow: hidden;", // add your own additional styling for bullets here
+		delay: 0, //how long it takes to create the bullet over the last character, in miliseconds
+		delayHover: 0, //how long it takes to hide again a hovered character
+		animation: 0, //how long it takes the animation itself
+		maxSize: 50 // maximum number of characters, to prevent  bullets exploding input's size
+	};
+
+	//let's extend our plugin with default or user options when defined
+	var options = $.extend(defaults, options);
+
+    return this.each(function() {
+		//let's declare some variables
+		var  bullet = options.bullet,
+				font = options.font,
+				bg = options.bg,
+				free = options.free,
+				freeBul = options.freeBul,
+				delay = options.delay,
+				delayHover = options.delayHover,
+				animation = options.animation,
+				lastBul = "";
+
+		//since we just can't change a field's type, we'll remove it and append a brand new text input on it's place
+		var  oldElement = $(this); // caching element, so we don't need to call jquery every time
+		var inputHTML = '<input type="text" style="font-family: '+  font +'; " />';
+		var input = oldElement.after(inputHTML).next(); // appending our simple text field with our styling (font-family) AND caching it as input var
+
+		/****
+			we are saying here:
+				define the following variables: attr , i (zero), attrs (array with all oldElement attributes), l (size of attrs)
+				while our counter (i) is smaller than attributes lenght (l) increase our counter and run this code
+		*/
+		for ( var attr, i=0 , attrs = oldElement[0].attributes , l =attrs.length ; i < l ; i++){
+			attr = attrs.item(i);
+			if (attr.nodeName != "type" && attr.nodeName != "style") {
+				input.attr( attr.nodeName, attr.nodeValue );
+			}
+		}
+		oldElement.remove(); // bye, bye!
+
+		// let the game begin
+		var maskHTML = '<div class="hpMask" style="position: absolute; cursor: text; height: 1px; font-family: ' +  font + ' ; ' + free + ' " />';
+		var maskContainer = input.before(maskHTML).prev(); // appending our container for bullets with styling (font-family, free)
+		var bulletHTML = "<span class='hpBullet' style='background: " + bg + "; " + freeBul + " '>"+ bullet + " </span> "; // our bullets HTML with styling (bg, freeBul)
+		var countBullet = 0;
+
+		//since we use it from different places, it's better to add it via function
+		function addBullet() {
+			// add our last bullet, but hidden, and show anything that isn't last bullet
+			lastBul = maskContainer.append(bulletHTML).find(":last-child").hide();
+			maskContainer.find(":not(:last-child)").each( function(){ $(this).show();  } );
+			//start timer to show  lastBul
+			lastBul.delay(delay).fadeIn(animation);
+			countBullet++;
+		}
+
+		//first loop adding bullets when we have a default value
+		for ( i=0 ; i < input[0].value.length ; i++){
+			addBullet();
+		}
+
+		//let's bind all keydown and create / remove our bullets ; we need do use keydown in order to detect special characters in non-geecko browsers
+		input.keyup(
+			function(event) {
+				//check if something was really typed
+				if (input[0].value.length > countBullet) {
+					addBullet();
+				} else { //ooops, delete or backspace?
+					//then we check if something was really deleted
+					while (input[0].value.length < countBullet) {
+						maskContainer.find(":last-child").remove();
+						countBullet--;
+					}
+				}
+			}
+		);
+		//hide bullets based on a jquery object
+		function hideBullets(object) {
+			object.stop().css({ "height": "auto"}).animate({ opacity: 1 }, animation).removeClass("hpHiddenBullet");
+		}
+		//hover function for our bullets
+		/*maskContainer.delegate(".hpBullet",  'hover',
+			function(){
+				var item = $(this);
+				if (  item.hasClass("hpHiddenBullet") != true ) {
+					hideBullets( $(".hpHiddenBullet") );
+					item.stop().addClass("hpHiddenBullet").animate( { opacity: 0.01}, animation, function() { item.css({ "height": "1px"}); } );
+					setTimeout( function() {
+						if (  item.hasClass("hpHiddenBullet") == true ) {
+							hideBullets( item );
+						}
+					}, delayHover);
+				}
+			}
+		);*/
+    });
+ };
+})(jQuery);

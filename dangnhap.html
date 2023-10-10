@@ -1,0 +1,430 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0230)https://thuedientu.gdt.gov.vn/etaxnnt/Request?&dse_sessionId=giggojnmlSyejzKRrvLgIQy&dse_applicationId=-1&dse_pageId=3&dse_operationName=corpIndexProc&dse_errorPage=error_page.jsp&dse_processorState=initial&dse_nextEventName=login -->
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+
+	
+<link rel="stylesheet" type="text/css" href="./dangnhap_files/lianav3.css">
+	
+	
+
+<link href="./dangnhap_files/validation.css" rel="stylesheet" type="text/css">
+<link href="./dangnhap_files/dkyThue.css" type="text/css" rel="stylesheet">
+<link href="./dangnhap_files/msb.css" type="text/css" rel="stylesheet">
+<link href="./dangnhap_files/font-awesome.min.css" type="text/css" rel="stylesheet">
+<script src="./dangnhap_files/jquery-1.4.3.min.js.download" type="text/javascript"></script>
+<script src="./dangnhap_files/jquery.validate.js.download" type="text/javascript" language="javascript"></script>
+<script src="./dangnhap_files/jquery.metadata.js.download" type="text/javascript" language="javascript"></script>
+<script src="./dangnhap_files/menu.js.download" type="text/javascript" language="javascript"></script>
+<script src="./dangnhap_files/msb.js.download" type="text/javascript" language="javascript"></script>
+<title>Thue dien tu</title>
+<link rel="chrome-webstore-item" href="https://chrome.google.com/webstore/detail/ekaaenaocpheoabajfdnkhiibfmfmloo">
+</head>
+<body id="bodyP" data-new-gr-c-s-check-loaded="14.1041.0" data-gr-ext-installed="">
+<div class="khungtong">
+
+
+
+
+
+<link href="./dangnhap_files/jtasker.css" type="text/css" rel="stylesheet">
+<link href="./dangnhap_files/style_new.css" type="text/css" rel="stylesheet">
+<link href="./dangnhap_files/msb.css" type="text/css" rel="stylesheet">
+<link href="./dangnhap_files/cssmoi.css" type="text/css" rel="stylesheet">
+<link href="./dangnhap_files/ddtabmenu.css" rel="stylesheet" type="text/css">
+<link rel="shortcut icon" href="https://thuedientu.gdt.gov.vn/etaxnnt/static/images/epay/logo.png">
+<link href="./dangnhap_files/jquery.keypad.css" type="text/css" rel="stylesheet">
+<link rel="stylesheet" href="./dangnhap_files/validationEngine.jquery.css" type="text/css" media="screen" title="no title" charset="utf-8">
+<link rel="stylesheet" href="./dangnhap_files/loginmsb.css" type="text/css" media="screen" title="no title" charset="utf-8">
+<link href="./dangnhap_files/style.css" rel="stylesheet" type="text/css">
+<link href="./dangnhap_files/styleDemo.css" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+<script src="./dangnhap_files/common.js.download" type="text/javascript"></script>
+<script src="./dangnhap_files/lianav3.js.download" type="text/javascript"></script>
+<script src="./dangnhap_files/jquery.ui.js.download" type="text/javascript"></script>
+<script src="./dangnhap_files/jquery.tasker.js.download" type="text/javascript"></script>
+<script src="./dangnhap_files/msb.js.download" type="text/javascript"></script>
+<script src="./dangnhap_files/ddtabmenu.js.download" type="text/javascript"></script>
+<script src="./dangnhap_files/jquery.hp.js.download" type="text/javascript" language="javascript"></script>
+<script src="./dangnhap_files/jquery-1.4.3.min.js.download" type="text/javascript"></script>
+<script src="./dangnhap_files/jquery.validationEngine.js.download" type="text/javascript"></script>
+<script src="./dangnhap_files/jquery.hp.js.download" type="text/javascript" language="javascript"></script>
+<script src="./dangnhap_files/jquery.iframe-auto-height.plugin.1.7.1.js.download" type="text/javascript"></script>
+
+
+
+	<script src="./dangnhap_files/validatevn.js.download" type="text/javascript"></script>
+	<link rel="stylesheet" href="./dangnhap_files/titlevn.css" type="text/css" media="screen" title="no title" charset="utf-8">
+
+<script src="./dangnhap_files/jquery.keypad.js.download" type="text/javascript"></script>
+
+
+<script language="javascript">
+	jQuery(document).ready(function() {
+		   $("#_userName").val("");
+		   $("#password").val("");
+		   $("#vcode").val("");
+		jQuery("#loginForm").validationEngine();
+		$(".keypad-trigger").attr("tabindex", 5);
+		$(".chon_ngon_ngu_en").click(function () {
+			cLanguage('en_US');
+		});
+		$(".chon_ngon_ngu_vn").click(function () {
+			cLanguage('vi_VN');
+		});
+		var language_selected = "vi_VN";
+		if (language_selected =='vi_VN') {
+			$('.chon_ngon_ngu_vn').addClass('ngonngu_dc_chon')
+		}else{
+			$('.chon_ngon_ngu_en').addClass('ngonngu_dc_chon')
+		}
+	});
+
+
+	function logon(){
+		var user = document.getElementById("_userName");
+		var pass = document.getElementById("password");
+		if($.trim(user.value) == ""){
+			user.focus();
+			alert("Bạn chưa nhập Tên đăng nhập!");
+		} else if($.trim(pass.value) == ""){
+			pass.focus();
+			alert("Bạn chưa nhập Mật khẩu!");
+		}
+		else {
+		checkVerify();
+	}
+	}
+
+	// anhvt add check verify
+	function checkVerify(){
+			var show = document.getElementById("showVerifyCode");
+	 if($.trim(show.value) == 'show'){
+	        var vcode = document.getElementById("vcode");
+	        if($.trim(vcode.value) == ''){
+			vcode.focus();
+			alert("Vui lòng nhập Mã xác nhận!");
+		}
+		else{
+			  jQuery("#loginForm").submit();
+		}
+	   }
+	else{
+			  jQuery("#loginForm").submit();
+	     }
+	}
+	//
+	function reloadVerifyCode(){
+		var timenow = new Date().getTime();
+    	document.getElementById("safecode").src="/etaxnnt/servlet/ImageServlet?d="+timenow;
+ 	}
+	jQuery(document).ready(function(){
+		$("#_userName").val("");
+		$("#password").val("");
+		$("#vcode").val("");
+		jQuery("#vi_VN").css("fontWeight","bold");
+		jQuery("#vi_VN").css("text-decoration","underline");
+		jQuery("#vi_VN").css("color","#FF0000");
+	});
+
+	$(function () {
+		$('#password_khongdungden').keypad({
+			   target: $('.inlineTarget:first'),
+			   layout: ['~!@#$%^&*()_+|' + $.keypad.BACK,
+						'`1234567890-=\\'  + $.keypad.SHIFT,
+						'qwertyuiop{}[]'  + $.keypad.CLEAR,
+						'asdfghjkl;:\'"'+ $.keypad.ENTER,
+						'zxcvbnm,.?<>/'],
+			   showOn:"button",
+			   buttonImage:"/etaxnnt/static/images/default/softkeyboard/keypad_white.png",
+			   buttonImageOnly:false,
+			   keypadOnly:false,
+			   prompt: 'MHB BANK soft keyboard<button type="button" class="keypad-close" title="Close the soft keyboard">close</button>',
+			   randomiseNumeric:true,
+			   shiftText:"CapsLk",
+			   keypadClass:"newkey"
+	    });
+		var keypadTarget = null;
+		$('.inlineTarget').focus(function() {
+		  if (keypadTarget != this) {
+			  keypadTarget = this;
+			  $('#inlineTargetKeypad').keypad('change', {target: this});
+			  }
+	  	});
+	});
+
+	function cLanguage(value){
+// 		obj.focus();
+// 		obj.style.fontWeight="bold";
+		jQuery.ajax({
+		type: "POST",
+		url: "/etaxnnt/Request?&dse_sessionId=giggojnmlSyejzKRrvLgIQy&dse_applicationId=-1&dse_pageId=5&dse_operationName=corpIndexProc&dse_processorState=initial&dse_nextEventName=changeLanguageState",
+		data: "_languages="+value,
+		success: function(msg){
+			window.location="/etaxnnt/Request?&dse_sessionId=giggojnmlSyejzKRrvLgIQy&dse_applicationId=-1&dse_pageId=5&dse_operationName=corpIndexProc&dse_processorState=initial&dse_nextEventName=start";
+		}
+	})}
+
+	$(function(){(jQuery("#loginForm").keypress(function(event){
+		if(event.which==13){
+			logon();
+		}
+	}));});
+
+	function missPass(){
+		var url1 = '/etaxnnt/Request?&dse_sessionId=giggojnmlSyejzKRrvLgIQy&dse_applicationId=-1&dse_pageId=5&dse_operationName=corpMissPassProc&dse_processorState=initial&dse_nextEventName=start';
+	    window.location.href = url1;
+	}
+	
+	function removeSpace(){
+	  var user = document.getElementById("_userName").value;
+	  var _user = user.replace(/\s+/g,'');
+	  $("#_userName").val(_user);
+	}
+</script>
+<style>
+	.box_common_content {
+		border-left: 0px solid #D8ECFF;
+		border-right: 0px solid #D8ECFF;
+	}
+	.noidung {
+		padding-bottom:0px;
+	}
+	.dangnhap {
+	    margin-top: 30px;
+    }
+    .doitac {
+		margin-bottom: 20px;
+    }
+    body {
+	    font-family: Arial,Helvetica,sans-serif;
+	    color: #000;
+	    text-align: left;
+	}
+	.footer {
+  bottom: none;
+}
+</style>
+
+
+
+<!--TOP BANNER-->
+
+<!--END TOP BANNER-->
+
+<!--MENU CHÍNH-->
+
+<!--MENU CẤP 1-->
+
+<div id="ddtabs1" class="menu basictab">
+    <ul id="tabmenu" class="curren1">
+    	
+			
+			
+				<li><a href="https://thuedientu.gdt.gov.vn/etaxnnt/Request?&amp;dse_sessionId=giggojnmlSyejzKRrvLgIQy&amp;dse_applicationId=-1&amp;dse_pageId=5&amp;dse_operationName=corpIndexProc&amp;dse_processorState=initial&amp;dse_nextEventName=home" class="current">
+	    		<span style="height: 29px"><img height="20px" style="padding-top: 5px;" src="./dangnhap_files/home_1.png"></span></a></li>
+			
+		
+    </ul>
+</div>
+<!--END MENU CẤP 1-->
+<!--MENU CẤP 2-->
+<div class="submenuEpay" style="display: none">
+    <div class="tabcontainer"></div>
+</div>
+<!--END MENU CẤP 2-->
+<!--END MENU CHÍNH-->
+
+<div class="frm_login" style="">
+<div class="khungbaolongin">
+<div class="login_gt">
+  
+    </div>
+    <h2 align="left">Đăng nhập hệ thống</h2>
+    <div class="frm_login_content">
+ <form name="" method="post" action="https://thuedientu.gdt.gov.vn/etaxnnt/Request" id="loginForm">
+<input type="hidden" name="dse_sessionId" value="giggojnmlSyejzKRrvLgIQy">
+<input type="hidden" name="dse_applicationId" value="-1">
+<input type="hidden" name="dse_pageId" value="5">
+<input type="hidden" name="dse_operationName" value="corpUserLoginProc">
+<input type="hidden" name="dse_errorPage" value="error_page.jsp">
+<input type="hidden" name="dse_processorState" value="initial">
+<input type="hidden" name="dse_nextEventName" value="start">
+
+ 	<input type="hidden" name="showVerifyCode" id="showVerifyCode" value="show">
+ 	<input type="hidden" name="isEtaxtmdt" id="isEtaxtmdt" value="">
+        <table cellpadding="0" cellspacing="0" border="0">
+          <tbody><tr>
+					<th>Tên đăng nhập</th>
+					<td align="right"><input type="input" id="_userName" name="_userName" value="" class="input_text" onblur="removeSpace();"></td>
+				</tr>
+				<tr>
+					<th>Mật khẩu</th>
+					<td align="right"><input type="password" value="" id="password" name="_password" class="input_text"></td>
+				</tr>
+				<tr>
+					<th valign="top"><label>Đối tượng</label></th>
+					<td align="right">
+						<select id="login_type" name="login_type">
+							<option value="01">Người nộp thuế</option>
+							<option value="02">Đại lý thuế</option>
+						</select>
+					</td>
+				</tr>
+				
+					<tr>
+						<th>Mã xác nhận</th>
+						<td>
+							<div class="khung_nhap_mxn">
+								<div class="nhap_mxn">
+									<input type="text" value="" id="vcode" maxlength="4" name="_verifyCode">
+								</div>
+								<div class="hien_mxn">
+									<img alt="Extra-code" id="safecode" src="./dangnhap_files/ImageServlet" width="57" height="19" hspace="2" border="0" align="absmiddle">
+									<span class="lam_moi_mxn"> <a href="https://thuedientu.gdt.gov.vn/etaxnnt/Request?&amp;dse_sessionId=giggojnmlSyejzKRrvLgIQy&amp;dse_applicationId=-1&amp;dse_pageId=3&amp;dse_operationName=corpIndexProc&amp;dse_errorPage=error_page.jsp&amp;dse_processorState=initial&amp;dse_nextEventName=login#"> <img width="18" height="16" alt="" align="absmiddle" src="./dangnhap_files/lam_moi.png" onclick="reloadVerifyCode();"></a>
+									</span>
+								</div>
+							</div>
+						</td>
+					</tr>
+				
+				<tr>
+					<th style="width: 90px;">
+					</th>
+					<td align="right">
+					<input class="frm_login_btn awesome" type="button" id="dangnhap" style="float: right; margin-left:0px; margin-bottom:5px; font-size: 13px;padding:2px;line-height: 15px; background-color:#fff " value="Đăng nhập" onclick="logon();" onkeydown="if(event.keyCode==13){logon();}"></td>
+				</tr>
+          <tr>
+          <td align="right" colspan="2">
+          
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+					
+					</td>
+          </tr>
+           <tr>
+            <th>
+            <!--  <div class="ngon_ngu">
+		<div class="chon_ngon_ngu_en"></div>
+		<div class="chon_ngon_ngu_vn"></div>
+	        </div> --></th>
+            <td align="right">
+				<div><a style="color:white;" href="https://thuedientu.gdt.gov.vn/etaxnnt/Request?&amp;dse_sessionId=giggojnmlSyejzKRrvLgIQy&amp;dse_applicationId=-1&amp;dse_pageId=3&amp;dse_operationName=corpIndexProc&amp;dse_errorPage=error_page.jsp&amp;dse_processorState=initial&amp;dse_nextEventName=login#" onclick="missPass();" target="_self">
+				<u>
+				 <i style="color:white;">
+				 Lấy lại mật khẩu
+				 </i>
+				</u>
+			    </a>
+				</div>
+			</td>
+          </tr>
+        </tbody></table>
+        </form>
+
+
+  </div>
+  <div class="conten_gt" style="margin-left: 15px; margin-right: 15px; color: red; font-family: Times New Roman, Times, serif; font-size: 16px">
+  	<b><u>Hướng dẫn đăng nhập</u></b>:<br>- Người nộp thuế đăng nhập hệ thống bằng tài khoản giao dịch điện tử với cơ quan thuế (tài khoản đăng nhập hệ thống Thuế điện tử).
+  	<br>- Trường hợp chưa có tài khoản giao dịch thuế điện tử, <br>người nộp thuế đăng ký tại trang <a class="link_common" href="https://thuedientu.gdt.gov.vn/">https://thuedientu.gdt.gov.vn</a> phân hệ DOANH NGHIỆP.
+  </div>
+  <h2></h2>
+  </div>
+  </div>
+  
+  <div class="footer" style="margin:0px auto;width: 100%; clear: both; bottom: -170px;">
+          <!-- <ul style="display: block; text-align: left">
+            <li style="float: left;list-style: none;"><a href="#">Trang chủ</a></li>
+            <li style="float: left; margin-left: 50px;"><a href="#">Nộp tờ khai</a></li>
+            <li style="float: left; margin-left: 50px;"><a href="#">Kê khai trực tuyến</a></li>
+            <li style="float: left; margin-left: 50px;"><a href="#">Tra cứu</a></li>
+            <li style="float: left; margin-left: 50px;"><a href="#">Tài khoản</a></li>
+            <li style="float: left; margin-left: 50px;"><a href="#">Trợ giúp</a></li>
+          </ul> -->
+         <div class="lenhe_ft" style="text-align:center; font-family: Tahoma;font-size: 8pt;">
+        <strong>Thuế Việt Nam - Trang thông tin điện tử của Tổng cục Thuế<br>
+          Cơ quan chủ quản: Bộ Tài Chính - Số giấy phép: 207/GP-BC ngày 14/05/2004 do Cục Báo chí - Bộ VHTT cấp <br>
+          Địa chỉ: 123 Lò Đúc, phường Đống Mác, quận Hai Bà Trưng, thành phố Hà Nội <br>
+          Điện thoại: (024).37689679 - số máy lẻ 2180.<br>
+         Ghi rõ nguồn <a class="link_common" href="http://thuedientu.gdt.gov.vn/">http://thuedientu.gdt.gov.vn</a> khi phát hành thông tin từ website này </strong>
+      </div>
+      <br>
+      <div class="lenhe_ft" style="text-align:center; font-family: Tahoma;font-size: 8pt;">
+      	<a href="https://tinnhiemmang.vn/danh-ba-tin-nhiem/thuedientugdtgovvn-1691655006" title="Chung nhan Tin Nhiem Mang" target="_blank"><img src="./dangnhap_files/handle_cert" width="150px" height="auto" alt="Chung nhan Tin Nhiem Mang"></a>
+      </div>
+</div>
+
+
+
+<script type="text/javascript">
+if($("table[id='data_content']")!=null){
+	$("table[id='data_content']").find("td:empty").replaceWith("<td>&nbsp;</td>");
+}
+if(true){
+	if(false && ''=='false' ){
+		var collection = document.getElementsByClassName("btn_type1");
+		for (var i = 0; i < collection.length; i++) {
+			if(collection[i].value=='Hoàn thành kê khai >>'){
+				collection[i].disabled = true;
+			}
+		}
+	}
+}
+
+
+	
+
+
+</script>
+					
+	
+
+
+
+</div>
+
+
+<script id="f5_cspm">(function(){var f5_cspm={f5_p:'LLNMBJGOHEALIIBDFDNPKFDFJKMIMIPHCHLKLBCLDKFDNCNAAIFHNAJPJAMOKKGPJKHBDFMFAABAECDNPEKAKCMDAAMJBKAJLIIEEIPAEMGBODFLLEFAHMBALCOGMFNP',setCharAt:function(str,index,chr){if(index>str.length-1)return str;return str.substr(0,index)+chr+str.substr(index+1);},get_byte:function(str,i){var s=(i/16)|0;i=(i&15);s=s*32;return((str.charCodeAt(i+16+s)-65)<<4)|(str.charCodeAt(i+s)-65);},set_byte:function(str,i,b){var s=(i/16)|0;i=(i&15);s=s*32;str=f5_cspm.setCharAt(str,(i+16+s),String.fromCharCode((b>>4)+65));str=f5_cspm.setCharAt(str,(i+s),String.fromCharCode((b&15)+65));return str;},set_latency:function(str,latency){latency=latency&0xffff;str=f5_cspm.set_byte(str,40,(latency>>8));str=f5_cspm.set_byte(str,41,(latency&0xff));str=f5_cspm.set_byte(str,35,2);return str;},wait_perf_data:function(){try{var wp=window.performance.timing;if(wp.loadEventEnd>0){var res=wp.loadEventEnd-wp.navigationStart;if(res<60001){var cookie_val=f5_cspm.set_latency(f5_cspm.f5_p,res);window.document.cookie='f5avr1062319554aaaaaaaaaaaaaaaa='+encodeURIComponent(cookie_val)+';path=/';}
+return;}}
+catch(err){return;}
+setTimeout(f5_cspm.wait_perf_data,100);return;},go:function(){var chunk=window.document.cookie.split(/\s*;\s*/);for(var i=0;i<chunk.length;++i){var pair=chunk[i].split(/\s*=\s*/);if(pair[0]=='f5_cspm'&&pair[1]=='1234')
+{var d=new Date();d.setTime(d.getTime()-1000);window.document.cookie='f5_cspm=;expires='+d.toUTCString()+';path=/;';setTimeout(f5_cspm.wait_perf_data,100);}}}}
+f5_cspm.go();}());</script><div class="keypad-popup" style="display: none;"></div></body><grammarly-desktop-integration data-grammarly-shadow-root="true"><template shadowrootmode="open"><style>
+      div.grammarly-desktop-integration {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+        -moz-user-select: none;
+        -webkit-user-select: none;
+        -ms-user-select:none;
+        user-select:none;
+      }
+
+      div.grammarly-desktop-integration:before {
+        content: attr(data-content);
+      }
+    </style><div aria-label="grammarly-integration" role="group" tabindex="-1" class="grammarly-desktop-integration" data-content="{&quot;mode&quot;:&quot;full&quot;,&quot;isActive&quot;:true,&quot;isUserDisabled&quot;:false}"></div></template></grammarly-desktop-integration></html>

@@ -1,0 +1,380 @@
+(function (jQuery){
+/*
+ * jQuery Plugin - Task Management
+ * Author: Roy.J	Mail: jxlai2008@163.com	Homepage: www.popocms.com
+ * Copyright (c) 2011 popocms.com
+ * @license http://www.gnu.org/licenses/gpl.html [GNU General Public License]
+ *
+ * $Date: 2011-4-18
+ * $Vesion: 1.0
+ @ how to use and example: Please Open demo.html
+ */
+	this.version = '@1.0';
+	this.layer = {'width' : 400, 'height': 222};
+	this.title = 'Task Management';
+	this.time = 10000;
+	this.dataFromUrl = "jsp/taskPanel/pending_transaction.jsp";
+	this.isNewTip = false;
+	
+	
+	this.anims = {'type' : 'slide', 'speed' : 600};	
+	this.dateBox = $('<div id="dateContainer"></div>');
+	this.tipBox = $('<div id="tipContainer"></div>');
+	this.openTask;
+	this.miniTask;
+	this.scrolltimeout;
+//	this.lastDayInfo;
+	this.oldDayInfo;
+	this.inits = function(title, dateBox){
+		if($("#jtask").is("div")){ return; }
+		clearInterval(this.scrolltimeout);
+		$(document.body).prepend('<div id="jtask" style="width:'+this.layer.width+'px;height:'+this.layer.height+'px;"><div id="titleHide"><span id="jtask_close"><img id="minipngImg" src="'+minipngImgSrc+'" border="0"/></span><div class="jtask-title">'+title+'</div><div style="clear:both;"></div></div> <div style="padding-bottom:5px;border-top:none;width:100%;height:auto;font-size:12px;"><div id="jtask_content" style="width:'+(this.layer.width-17)+'px;height:'+(this.layer.height-50)+'px;"></div></div></div>');
+		dateBox.appendTo($('#jtask_content'));
+		this.tipBox.appendTo($('#jtask_content'));
+		this.ministatus(title);
+		dateBox.datepicker({
+						   showOtherMonths: true,
+						   selectOtherMonths: false,
+						   beforeShowDay: function(date) {							
+								if(currentMonthInfo.length>0){
+									for(var i=0;i<currentMonthInfo.length;i++){
+										var tempMonthInfo = currentMonthInfo[i].split("-");							
+										if(date.getFullYear()==tempMonthInfo[0]&&date.getMonth()+1==tempMonthInfo[1]&&date.getDate()==tempMonthInfo[2]){						
+											return [true, 'ui-state-default-task'];					
+										}
+									}
+									return [true, ''];
+								}else{
+									return [true, ''];
+								}
+						   },
+						   onChangeMonthYear: function(year, month, inst) {
+							   queryMonthTask(year,month,taskPanelMonthUri);
+						   },
+						   onSelect: function(dateText, inst) {
+							   queryDayTask(dateText.toString().substring(6,10),dateText.toString().substring(0,2),dateText.toString().substring(3,5),taskPanelDayUri);
+						   }
+						   });
+		//getter
+		//var wt = dateBox.datepicker( "getDate" );
+		//this.getTips(wt);
+		//alert(oTips);
+		//$(oTips).appendTo(this.tipBox);
+		
+		this.openTask = $("#jtask");
+		this.miniTask = $("#jtask2");
+	};
+	this.show = function(title,time){
+		if($("#jtask").is("div")){ return; }
+		if($("#jtask2").is("div")){$("#jtask2").remove();}
+		if(title==0 || !title)title = this.title;		
+		this.inits(title, this.dateBox);
+		if(time)this.time = time;
+		this.isNewTip = false;
+		this.scrolltimeout = setTimeout(function () {
+			var windowobj = $(window);
+			var cwinwidth = this.openTask.outerWidth(true);
+			var cwinheight = this.openTask.outerHeight(true);
+			var browserwidth = windowobj.width();
+			var browserheight = windowobj.height();
+			var	scrollLeft = windowobj.scrollLeft();
+			var	scrollTop = windowobj.scrollTop();
+			var rleft = scrollLeft + browserwidth - cwinwidth;
+			if ($.browser.safari) {
+				rleft = rleft - 15;
+			}
+			if ($.browser.opera) {
+				rleft = rleft + 15;
+			}
+			if ($.browser.msie && $.browser.version.indexOf("8") >= 0) {
+				rleft = rleft - 20;
+			}
+			
+			this.openTask.mytask({left: "right", top: "bottom"}, function() {
+				this.openTask.hide();
+			},{left: rleft, top: scrollTop + browserheight});
+			
+			this.miniTask.mytask({left: "right", top: "bottom"}, function() {
+				this.openTask.hide();
+			},{left: rleft, top: scrollTop + browserheight});
+			
+		},500);
+		switch(this.anims.type){
+			case 'slide':this.openTask.slideUp(this.anims.speed);break;
+			case 'fade':this.openTask.fadeIn(this.anims.speed);break;
+			case 'show':this.openTask.show(this.anims.speed);break;
+			default:this.openTask.slideDown(this.anims.speed);break;
+		}
+
+		$("#titleHide").click(function(){
+			clearInterval(this.scrolltimeout);
+			setTimeout('this.close1()', 1);
+		});
+	};
+	this.getTips = function(wt){
+		//alert("wt"+wt);
+		$.ajax({
+		   url:taskPanelReturnDayUri+"&currentDayInfo="+wt,
+		   type:"post",
+	//	   async:false,
+		   success:function(reTips){
+			    $("#tipContainer").hide(200).html(reTips).fadeIn(600);
+				$("#tipContainer .tipBox").each(function(o){
+					$(this).bind({
+							  mouseover:function(){
+								  oleft = $(this).position().left-168;
+								  otop = $(this).position().top-38;
+								  if(!$("#tooltip").is("div")){
+									  $("<div id=tooltip></div>")
+									  .css({
+										   left:oleft+"px",
+										   top:otop+"px"
+										   })
+									  .html($(this).html())
+									  .appendTo($("#tipContainer"))
+									  .fadeIn(500);
+								  }						  
+							  },
+							  mouseout:function(){
+								  $("#tooltip").remove();
+							  }
+							  });
+					});
+				}
+				});	
+	};
+	this.queryMonthTask=function(pYear,pMonth,pUri){
+		$.ajax({
+			type:"POST",
+			async:false,
+			url:pUri+"&pYear="+pYear+"&pMonth="+pMonth,
+			success:function(msg){
+				currentMonthInfo = msg.split("@");		
+			}
+			});
+	};
+	this.queryDayTask=function(pYear,pMonth,pDay,pUri){
+		
+		$.ajax({
+			type:"POST",
+			async:false,
+			url:pUri+"&pYear="+pYear+"&pMonth="+pMonth+"&pDay="+pDay,
+			success:function(msg){
+				currentDayInfo = msg;
+				getTips(currentDayInfo);
+				//return msg;
+			}
+			});
+		
+	};
+		
+	this.lays = function(width, height){
+		if($("#jtask").is("div")){ return; }
+		if(width!=0 && width)this.layer.width = width;
+		if(height!=0 && height)this.layer.height = height;
+	};
+	this.anim = function(type,speed){
+		if($("#jtask").is("div")){ return; }
+		if(type!=0 && type)this.anims.type = type;
+		if(speed!=0 && speed){
+			switch(speed){
+				case 'slow' : ;break;
+				case 'fast' : this.anims.speed = 200; break;
+				case 'normal' : this.anims.speed = 400; break;
+				default:
+					this.anims.speed = speed;
+			}			
+		}
+	};
+	this.rmjtask = function(time){
+		setTimeout('this.close1()', time);
+	};
+	this.close1 = function(){
+		switch(this.anims.type){
+			case 'slide':this.openTask.slideDown(this.anims.speed);break;
+			case 'fade':this.openTask.fadeOut(this.anims.speed);break;
+			case 'show':this.openTask.hide(this.anims.speed);break;
+			default:this.openTask.slideDown(this.anims.speed);break;
+		};
+		setTimeout('dateBox.datepicker("destroy");$("#jtask").remove();', this.anims.speed);
+		this.original();
+	};
+	this.ministatus = function(title){
+		if($("#jtask2").is("div")){ return; }
+		$('<DIV style="WIDTH:'+this.layer.width+'px;" id=jtask2><DIV id="titleShow"><SPAN id="jtask_show"><img id="repngImg" src="'+repngImgSrc+'" border="0"/></SPAN><div class="hasNewTask"></div><DIV class="jtask-title">'+title+'</DIV><DIV style="CLEAR: both"></DIV></DIV>').appendTo($(document.body));
+		tipInterval = setInterval("this.newTips()",500000);
+		$('#titleShow').click(function(){
+				$("#jtask2").slideDown(600);
+				$.tasker.show(0,600);  
+		});
+	};
+	this.newTips = function(){
+		if($("#hastipimg").is("img")){ return; }
+	
+		 //     change  this.isNewTip to shine
+		 oldDayInfo = currentDayInfo;
+		
+		var nowDate = new Date();
+		var pYear = nowDate.getFullYear();
+		var pMonth = nowDate.getMonth()+1; 
+		var pDay = nowDate.getDate();
+		queryDayTask(pYear,pMonth,pDay,taskPanelDayUri);
+		if(currentDayInfo == oldDayInfo){
+			this.isNewTip = false;
+		}
+		else{
+			this.isNewTip = true;
+			clearInterval(tipInterval);
+		}
+		
+		
+		if(this.isNewTip)$("<img/>").attr({"src":"static/css/default/images/yestask.gif","id":"hastipimg"}).appendTo($("#jtask2 .hasNewTask"));
+		
+	};
+	this.original = function(){	
+		this.layer = {'width' : 400, 'height': 222};
+		this.title = 'Task Management';
+		this.time = 6000;
+		this.anims = {'type' : 'slide', 'speed' : 600};
+	};
+
+
+    $.fn.mytask = function(position, hidefunc, initPos) {
+		if (position && position instanceof Object) {
+			var positionleft = position.left;
+			var positiontop = position.top;
+			
+			var left;
+			var top;
+			var windowobj = $(window);
+			var currentwin = this;
+			var cwinwidth;
+			var cwinheight;
+			var browserwidth;
+			var browserheight;
+			var scrollLeft;
+			var scrollTop;
+			
+			function getBrowserDim() {
+				browserwidth = windowobj.width();
+				browserheight = windowobj.height();
+				scrollLeft = windowobj.scrollLeft();
+				scrollTop = windowobj.scrollTop();	
+			}		
+			
+			function calLeft(positionleft, scrollLeft, browserwidth, cwinwidth) {
+				if (positionleft && typeof positionleft == "string") {
+					if (positionleft == "center") {
+						left = scrollLeft + (browserwidth - cwinwidth) / 2;	
+					} else if (positionleft == "left") {
+						left = scrollLeft;	
+					} else if (positionleft == "right") {
+						left = scrollLeft + browserwidth - cwinwidth;
+						if ($.browser.safari) {
+							left = left - 15;
+						}
+						if ($.browser.opera) {
+							left = left + 15;
+						}
+						if ($.browser.msie && $.browser.version.indexOf("8") >= 0) {
+							left = left - 20;
+						}
+					} else  {
+						left = scrollLeft + (browserwidth - cwinwidth) / 2;	
+					}
+				} else if (positionleft && typeof positionleft == "number") {
+					left = positionleft;
+				} else {
+					left = 0;
+				}
+			}
+			
+			function calTop(positiontop, scrollTop, browserheight, cwinheight) {
+				if (positiontop && typeof positiontop == "string") {
+					if (positiontop == "center") {
+						top = scrollTop + (browserheight - cwinheight) / 2;
+					} else if (positiontop == "top") {
+						top = scrollTop;
+					} else if (positiontop == "bottom") {
+						top = scrollTop + browserheight - cwinheight;
+						if ($.browser.opera) {
+							top = top - 25;
+						}
+					} else {
+						top = scrollTop + (browserheight - cwinheight) / 2;
+					}
+				} else if (positiontop && typeof positiontop == "number") {
+					top = positiontop;
+				} else {
+					top = 0;
+				}
+			}
+			
+			function moveWin() {
+				calLeft(currentwin.data("positionleft"), scrollLeft, browserwidth, cwinwidth);
+				calTop(currentwin.data("positiontop"), scrollTop, browserheight, cwinheight);
+				currentwin.animate({
+					left: left,
+					top: top
+				},600);	
+			}
+			
+			
+			currentwin.children(".title").children("img").click(function() {
+				if (!hidefunc) {
+					currentwin.hide("slow")	;
+				} else {
+					hidefunc();
+				}
+			});
+			if (initPos && initPos instanceof Object) {
+				var initLeft = initPos.left;
+				var initTop = initPos.top;
+				if (initLeft && typeof initLeft == "number") {
+					currentwin.css("left", initLeft);	
+				} else {
+					currentwin.css("left", 0);
+				}
+				if (initTop && typeof initTop == "number") {
+					currentwin.css("top", initTop);	
+				} else {
+					currentwin.css("top", 0);
+				}
+				currentwin.show();
+			}
+			cwinwidth = currentwin.outerWidth(true);
+			cwinheight = currentwin.outerHeight(true);
+			currentwin.data("positionleft", positionleft);
+			currentwin.data("positiontop", positiontop);
+			getBrowserDim();
+			moveWin();
+			var scrollTimeout;
+			
+			$(window).scroll(function(){
+				
+				if (!currentwin.is(":visible")) {
+					return;	
+				}
+				clearTimeout(scrollTimeout);
+				scrollTimeout = setTimeout(function(){
+					getBrowserDim();		
+					moveWin();
+				},300);
+			});
+			
+			$(window).resize(function(){
+				
+				if (!currentwin.is(":visible")) {
+					return;	
+				}
+				getBrowserDim();	
+				moveWin();	
+			});
+			
+			return currentwin;
+		}
+	}
+
+    jQuery.tasker = this;
+    return jQuery;
+})(jQuery);
