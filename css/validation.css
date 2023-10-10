@@ -1,0 +1,9 @@
+label.error {
+	color: red;
+	font-style: normal;
+	font-weight:normal;
+}
+div.error { 
+		display: none; 
+}
+input.checkbox { border: none }

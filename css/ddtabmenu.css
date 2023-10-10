@@ -1,0 +1,176 @@
+.tabcontent{
+	display:none;
+}
+.submenuEpay {
+    width: 932px;
+    margin: 0 auto;
+    padding: 0;
+    height:29px;
+}
+.submenuEpay li {
+    list-style: none;
+    display: inline;
+    float: left;
+    padding: 0px 10px 0px 10px;
+    border-right: solid 1px #d5eafa;
+    height: 29px;
+}
+
+.submenuEpay li a {
+	font-size: 13px;
+    line-height: 29px;
+    text-decoration: none;
+    color: #000000;
+}
+
+.tabcontainer {
+	/* height: 29px; */
+	text-align:center;
+	margin:0;
+	padding:0;
+	margin-top: -2px;
+	float:left;
+	width:100%;
+	z-index:3;
+	box-sizing:content-box;
+}
+
+a#tabmenuLink {display:none;}
+
+
+ul#tabmenu
+{
+	width: 100%;
+	margin: 0 auto;
+	/*If the menu has a width, this "margin:0 auto;" makes the menu center-aligned. You can remove it for left-alignment, or change it to "margin-left:auto; margin-right:0;" for right-alignment.*/
+	text-align: center;
+	list-style: none;
+	padding: 0;
+	padding-left: 10px;
+	font-size: 0;
+	position: relative;
+	cursor: hand;
+}
+
+ul#tabmenu:after
+{
+    content:'.'; height: 0; clear: both; display: block; visibility: hidden;
+}
+
+ul#tabmenu li
+{
+    display:inline;
+    list-style:none;
+    padding:0;
+    margin-top:0;
+    margin-bottom:0;
+    margin-left:-1px;
+    margin-right:0;
+    cursor: hand;
+}
+
+ul#tabmenu li a
+{
+    letter-spacing:normal;
+    padding: 0 18px 0px 18px;
+    line-height: 29px;
+    font-size: 12px;
+    font-weight:normal;
+    font-family:Arial;
+    text-decoration:none;
+    display:inline-block;
+    outline:0;
+    border:none;
+    border-bottom:none;
+    position:relative;
+    top: 0px;
+    z-index:4;
+    cursor: hand;
+}
+
+ul#tabmenu li.active a
+{
+    padding-bottom:1px;
+    color: #086de1;
+}
+
+ul#tabmenu li.active ul ul
+{
+    text-align:left;
+    padding:4px 24px 10px 24px;
+    left: 0px; /*offset*/
+    width: auto;
+    background:#FFFFFF;
+    border:1px solid #DEE2E9;
+    border-top: 0;
+    *top: 36px;
+    display: none;
+    position: absolute;
+    z-index: 4;
+    border-radius: 0 0 4px 4px;
+}
+
+ul#tabmenu li.active li
+{
+    position: relative;
+}
+
+ul#tabmenu li a {
+	width: auto;
+	float: left;
+	color: #fff;
+	font-weight: bold;
+}
+
+/* ul#tabmenu li a {
+    width: auto;
+    float: left;
+    color: #fff;
+    font-weight: bold;
+    height: 42px;
+    line-height: 42px;
+} */
+
+ul#tabmenu li:hover {
+	color: #fff;
+}
+
+.current {
+	background-position: left top !important;
+	color: #086de1 !important;
+}
+.current span {
+	background-position: right top !important;
+	color: #f6faff!important;
+	text-shadow: 0px 0px 2px #04418c;
+}
+
+.current {
+	background-position: left top !important;
+	color: #086de1 !important;
+}
+
+ul#tabmenu li a span {
+	width: 100%;
+	height: 100%;
+	float: left;
+}
+
+ul#tabmenu li a:hover {
+	color: #ffffff!important;
+	text-shadow: 0px 0px 5px #ffffff;
+	background: rgba(63,139,232,1);
+	background: -moz-linear-gradient(top, rgba(63,139,232,1) 0%, rgba(22,90,173,1) 100%);
+	background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(63,139,232,1)), color-stop(100%, rgba(22,90,173,1)));
+	background: -webkit-linear-gradient(top, rgba(63,139,232,1) 0%, rgba(22,90,173,1) 100%);
+	background: -o-linear-gradient(top, rgba(63,139,232,1) 0%, rgba(22,90,173,1) 100%);
+	background: -ms-linear-gradient(top, rgba(63,139,232,1) 0%, rgba(22,90,173,1) 100%);
+	background: linear-gradient(to bottom, rgba(63,139,232,1) 0%, rgba(22,90,173,1) 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#3f8be8', endColorstr='#165aad', GradientType=0 );
+}
+
+.fastMenu {
+	background-image: url(../../jquery/ddtabmenu/images/bg_menu_fast.jpg);
+	background-repeat: repeat-x;
+	background-position: left top;
+}
